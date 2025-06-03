@@ -3,12 +3,10 @@
 #include<string.h>
 #include<ctype.h>
 void AtualizarSaldoCaixa(float valor);
-
 	//////	CLIENTES   //////
 typedef struct{
-	int cpf,tel,cep,num;
 	char nome[101],estado[5],cidade[31],bairro[31],rua[51];
-	
+	char cpfc[13],telc[13],cepc[10],numc[7];
 }DadosCliente;
 void CadastrarCliente()
 {
@@ -21,49 +19,210 @@ void CadastrarCliente()
 		printf("\nErro no arquivo");
 	else
 	{
-		system("cls");
+		
 		fflush(stdin);
-		printf("Cadastro de Clientes\n\nEntre com o nome do cliente: ");
-		fgets(clt.nome,100,stdin);
-		printf("CPF: ");
-		scanf("%d",&clt.cpf);
-		pos = VerificarCliente(arq,clt.cpf);
-		if(pos==-1)
-		{
-			printf("Telefone: ");
-			scanf("%d",&clt.tel);
-			printf("CEP: ");
-			scanf("%d",&clt.cep);fflush(stdin);
-			printf("Estado(SP):");
-			fgets(clt.estado,4,stdin);
-			printf("Cidade: ");
-			fgets(clt.cidade,30,stdin);
-			printf("Bairro: ");
-			fgets(clt.bairro,30,stdin);
-			printf("Rua: ");
-			fgets(clt.rua,50,stdin);
-			printf("N˙mero da Casa:");
-			scanf("%d",&clt.num);fflush(stdin);
-			fwrite(&clt,sizeof(DadosCliente),1,arq);
-			printf("Cliente Cadastrado com Sucesso!\n");
-			system("pause");
-		}
-		else
-		{
-			printf("\nCliente j· cadastrado!\n\n");
-			fseek(arq,pos,0);
-			fread(&clt,sizeof(DadosCliente),1,arq);
-			printf("Nome: %s",clt.nome);
-			printf("CPF: %d\n",clt.cpf);
-			printf("Telefone: %d\n",clt.tel);
-			printf("CEP: %d\n",clt.cep);
-			printf("Estado: %s",clt.estado);
-			printf("Cidade: %s",clt.cidade);
-			printf("Bairro: %s",clt.bairro);
-			printf("Rua: %s",clt.rua);
-			printf("N˙mero da Casa: %d",clt.num);
-			system("pause");
-		}
+		do{
+			system("cls");
+			printf("Cadastro de Clientes\n\nEntre com o nome completo do cliente: ");
+			fgets(clt.nome,100,stdin);
+			if(CampoVazio(clt.nome))
+			{
+				printf("Campo Vazio!\n");
+				system("pause");
+				printf("\033[A");    // Move o cursor 3 linhas para cima
+				printf("\033[2K");	// Apaga
+				printf("\033[A");    
+				printf("\033[2K");
+				printf("\033[A");    
+				printf("\033[2K");
+			}
+		}while(CampoVazio(clt.nome));
+		do{
+			printf("CPF: ");
+			fgets(clt.cpfc,13,stdin);
+			
+			size_t len = strlen(clt.cpfc);
+		    if (len > 0 && clt.cpfc[len - 1] == '\n') {
+		        clt.cpfc[len - 1] = '\0';
+		    } else {
+		        int ch;
+		        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+		    }
+			if(!ValidarCPF(clt.cpfc))
+			{
+				printf("CPF Inv√°lido!\n");
+				system("pause");
+				printf("\033[A");    // Move o cursor 3 linhas para cima
+				printf("\033[2K");	// Apaga
+				printf("\033[A");    
+				printf("\033[2K");
+				printf("\033[A");    
+				printf("\033[2K");
+			}
+		}while(!ValidarCPF(clt.cpfc));
+			pos = VerificarCliente(arq,clt.cpfc);
+			if(pos==-1)
+			{
+				do{
+					printf("Telefone: ");
+					fgets(clt.telc,13,stdin);
+					
+					size_t len = strlen(clt.telc);
+				    if (len > 0 && clt.telc[len - 1] == '\n') {
+				        clt.telc[len - 1] = '\0';
+				    } else {
+				        int ch;
+				        while ((ch = getchar()) != '\n' && ch != EOF);
+				    }
+					if(!ValidarTel(clt.telc))
+					{
+						printf("Telefone Inv√°lido!\n");
+						system("pause");
+						printf("\033[A");    // Move o cursor 3 linhas para cima
+						printf("\033[2K");	// Apaga
+						printf("\033[A");    
+						printf("\033[2K");
+						printf("\033[A");    
+						printf("\033[2K");
+					}
+				}while(!ValidarTel(clt.telc));
+				do{
+					printf("CEP: ");
+					fgets(clt.cepc,10,stdin);
+					
+					size_t len = strlen(clt.cepc);
+				    if (len > 0 && clt.cepc[len - 1] == '\n') {
+				        clt.cepc[len - 1] = '\0';
+				    } else {
+				        int ch;
+				        while ((ch = getchar()) != '\n' && ch != EOF);
+				    }
+					if(!ValidarCep(clt.cepc))
+					{
+						printf("CEP Inv√°lido!\n");
+						system("pause");
+						printf("\033[A");    // Move o cursor 3 linhas para cima
+						printf("\033[2K");	// Apaga
+						printf("\033[A");    
+						printf("\033[2K");
+						printf("\033[A");    
+						printf("\033[2K");
+					}
+				}while(!ValidarCep(clt.cepc));
+				
+				do{
+				printf("Estado(SP):");
+				fgets(clt.estado,4,stdin);
+				
+				size_t len = strlen(clt.estado);
+			    if (len > 0 && clt.estado[len - 1] == '\n') {
+			        clt.estado[len - 1] = '\0';
+			    } else {
+			        int ch;
+			        while ((ch = getchar()) != '\n' && ch != EOF);
+			    }
+				if(!ValidarEstado(clt.estado))
+					{
+						printf("Estado Inv√°lido!\n");
+						system("pause");
+						printf("\033[A");    // Move o cursor 3 linhas para cima
+						printf("\033[2K");	// Apaga
+						printf("\033[A");    
+						printf("\033[2K");
+						printf("\033[A");    
+						printf("\033[2K");
+					}
+				}while(!ValidarEstado(clt.estado));
+				do{
+					printf("Cidade: ");
+					fgets(clt.cidade,30,stdin);
+					if(CampoVazio(clt.cidade))
+					{
+						printf("Campo Vazio!\n");
+						system("pause");
+						printf("\033[A");    // Move o cursor 3 linhas para cima
+						printf("\033[2K");	// Apaga
+						printf("\033[A");    
+						printf("\033[2K");
+						printf("\033[A");    
+						printf("\033[2K");
+					}
+				}while(CampoVazio(clt.cidade));
+				
+				do{
+					printf("Bairro: ");
+					fgets(clt.bairro,30,stdin);
+					if(CampoVazio(clt.bairro))
+					{
+						printf("Campo Vazio!\n");
+						system("pause");
+						printf("\033[A");    // Move o cursor 3 linhas para cima
+						printf("\033[2K");	// Apaga
+						printf("\033[A");    
+						printf("\033[2K");
+						printf("\033[A");    
+						printf("\033[2K");
+					}
+				}while(CampoVazio(clt.bairro));
+				do{
+					printf("Rua: ");
+					fgets(clt.rua,50,stdin);
+					if(CampoVazio(clt.rua))
+					{
+						printf("Campo Vazio!\n");
+						system("pause");
+						printf("\033[A");    // Move o cursor 3 linhas para cima
+						printf("\033[2K");	// Apaga
+						printf("\033[A");    
+						printf("\033[2K");
+						printf("\033[A");    
+						printf("\033[2K");
+					}
+				}while(CampoVazio(clt.rua));
+				do{
+					printf("N√∫mero da Casa: ");
+					fgets(clt.numc,7,stdin);
+					
+					size_t len = strlen(clt.numc);
+				    if (len > 0 && clt.numc[len - 1] == '\n') {
+				        clt.numc[len - 1] = '\0';
+				    } else {
+				        int ch;
+				        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+				    }
+					if(!ValidarNum(clt.numc))
+					{
+						printf("Numero da casa inv√°lido!\n");
+						system("pause");
+						printf("\033[A");    // Move o cursor 3 linhas para cima
+						printf("\033[2K");	// Apaga
+						printf("\033[A");    
+						printf("\033[2K");
+						printf("\033[A");    
+						printf("\033[2K");
+					}
+				}while(!ValidarNum(clt.numc));
+				
+				fwrite(&clt,sizeof(DadosCliente),1,arq);
+				printf("Cliente Cadastrado com Sucesso!\n");
+				system("pause");
+			}
+			else
+			{
+				printf("\nCliente j√° cadastrado!\n\n");
+				fseek(arq,pos,0);
+				fread(&clt,sizeof(DadosCliente),1,arq);
+				printf("Nome: %s",clt.nome);
+				printf("CPF: %s\n",clt.cpfc);
+				printf("Telefone: %s\n",clt.telc);
+				printf("CEP: %s\n",clt.cepc);
+				printf("Estado: %s\n",clt.estado);
+				printf("Cidade: %s",clt.cidade);
+				printf("Bairro: %s",clt.bairro);
+				printf("Rua: %s",clt.rua);
+				printf("N√∫mero da Casa: %s\n",clt.numc);
+				system("pause");
+			}
 		fclose(arq);
 	}
 }
@@ -78,13 +237,29 @@ void EditarCliente()
 		printf("\nErro no arquivo");
 	else
 	{
-		system("cls");
+		do{
+			system("cls");			
+			printf("Editar Clientes\n\nEntre com o CPF do cliente: (0 Para Voltar) ");
+			fgets(clt.cpfc,13,stdin);
+			
+			size_t len = strlen(clt.cpfc);
+		    if (len > 0 && clt.cpfc[len - 1] == '\n') {
+		        clt.cpfc[len - 1] = '\0';
+		    } else {
+		        int ch;
+		        while ((ch = getchar()) != '\n' && ch != EOF);
+		    }
+			
+			if(!ValidarCPF(clt.cpfc) && stricmp(clt.cpfc,"0")!=0)
+			{
+				printf("CPF Inv√°lido!\n");
+				system("pause");
+			}
+		}while(!ValidarCPF(clt.cpfc) && stricmp(clt.cpfc,"0")!=0);
 		
-		printf("Editar Clientes\n\nEntre com o CPF do cliente: (0 Para Voltar)");
-		scanf("%d",&clt.cpf);
-		while(clt.cpf!=0)
+		while(stricmp(clt.cpfc,"0")!=0)//clt.cpf!=0)
 		{
-			pos = VerificarCliente(arq,clt.cpf);
+			pos = VerificarCliente(arq,clt.cpfc);
 			if(pos==-1)
 			{
 				printf("Cliente Inexistente.");
@@ -99,16 +274,24 @@ void EditarCliente()
 					system("cls");
 				
 					printf("Editar Clientes\n\nNome: %s",clt.nome);
-					printf("CPF: %d\n",clt.cpf);
-					printf("Telefone: %d\n--EndereÁo:\n",clt.tel);
-					printf("CEP: %d\n",clt.cep);
-					printf("Estado: %s",clt.estado);
+					printf("CPF: %s\n",clt.cpfc);
+					printf("Telefone: %s\n--Endere√ßo:\n",clt.telc);
+					printf("CEP: %s\n",clt.cepc);
+					printf("Estado: %s\n",clt.estado);
 					printf("Cidade: %s",clt.cidade);
 					printf("Bairro: %s",clt.bairro);
 					printf("Rua: %s",clt.rua);
-					printf("N˙mero: %d\n----\n",clt.num);
-					printf("\nDeseja alterar: \n 1- Nome \n 2- CPF\n 3- Telefone\n 4- EndereÁo\n 0- Voltar\n\n OpÁ„o: ");
+					printf("N√∫mero: %s\n\n----\n",clt.numc);
+					printf("\nDeseja alterar: \n 1- Nome \n 2- CPF\n 3- Telefone\n 4- Endere√ßo\n 0- Voltar\n\n Op√ß√£o: ");
 					scanf("%d",&op);fflush(stdin);
+					if(op == 1 || op == 2)
+					{
+						if (ClienteFezVenda(clt.cpfc)) {
+					        printf("\nEste cliente j√° efetuou uma compra e n√£o pode ter seu nome ou CPF Alterado!\n");
+					        system("pause");
+					        op = -1;
+					    }
+					}
 				}while(op<0 || op>4);
 				switch(op)
 				{
@@ -122,51 +305,221 @@ void EditarCliente()
 						system("cls");
 						break;
 					case 2:
-						printf("Novo CPF: ");
-						scanf("%d",&clt.cpf);fflush(stdin);
+						do{
+							printf("Novo CPF: ");
+							fgets(clt.cpfc,13,stdin);
+							
+							size_t len = strlen(clt.cpfc);
+						    if (len > 0 && clt.cpfc[len - 1] == '\n') {
+						        clt.cpfc[len - 1] = '\0';
+						    } else {
+						        int ch;
+						        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+						    }
+							
+							if(!ValidarCPF(clt.cpfc))
+							{
+								printf("CPF Inv√°lido!\n");
+								system("pause");
+								printf("\033[A");    // Move o cursor 3 linhas para cima
+    							printf("\033[2K");
+    							printf("\033[A");    
+    							printf("\033[2K");
+    							printf("\033[A");    
+    							printf("\033[2K");
+							}
+						}while(!ValidarCPF(clt.cpfc));
 						fseek(arq,pos,0);
 						fwrite(&clt,sizeof(DadosCliente),1,arq);
-						printf("CPF Alterado!");
+						printf("CPF Alterado!\n");
 						system("pause");
 						system("cls");
 						break;
 					case 3:
-						printf("Novo Telefone: ");
-						scanf("%d",&clt.tel);fflush(stdin);
+						
+						do{
+							printf("Novo telefone: ");
+							fgets(clt.telc,13,stdin);
+							
+							size_t len = strlen(clt.telc);
+						    if (len > 0 && clt.telc[len - 1] == '\n') {
+						        clt.telc[len - 1] = '\0';
+						    } else {
+						        int ch;
+						        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+						    }
+							if(!ValidarTel(clt.telc))
+							{
+								printf("Telefone Inv√°lido!\n");
+								system("pause");
+								printf("\033[A");    // Move o cursor 3 linhas para cima
+								printf("\033[2K");	// Apaga
+								printf("\033[A");    
+								printf("\033[2K");
+								printf("\033[A");    
+								printf("\033[2K");
+							}
+						}while(!ValidarTel(clt.telc));
+						
 						fseek(arq,pos,0);
 						fwrite(&clt,sizeof(DadosCliente),1,arq);
-						printf("Telefone Alterado!");
+						printf("Telefone Alterado!\n");
 						system("pause");
 						system("cls");
 						break;
 					case 4:
-						printf("CEP: ");
-						scanf("%d",&clt.cep);fflush(stdin);
-						printf("Estado(SP): ");
-						fgets(clt.estado,4,stdin);
-						printf("Cidade: ");
-						fgets(clt.cidade,30,stdin);
-						printf("Bairro: ");
-						fgets(clt.bairro,30,stdin);
-						printf("Rua: ");
-						fgets(clt.rua,50,stdin);
-						printf("N˙mero da Casa:");
-						scanf("%d",&clt.num);fflush(stdin);
+						
+						do{
+							printf("CEP: ");
+							fgets(clt.cepc,10,stdin);
+							
+							size_t len = strlen(clt.cepc);
+						    if (len > 0 && clt.cepc[len - 1] == '\n') {
+						        clt.cepc[len - 1] = '\0';
+						    } else {
+						        int ch;
+						        while ((ch = getchar()) != '\n' && ch != EOF);
+						    }
+							if(!ValidarCep(clt.cepc))
+							{
+								printf("CEP Inv√°lido!\n");
+								system("pause");
+								printf("\033[A");    // Move o cursor 3 linhas para cima
+								printf("\033[2K");	// Apaga
+								printf("\033[A");    
+								printf("\033[2K");
+								printf("\033[A");    
+								printf("\033[2K");
+							}
+						}while(!ValidarCep(clt.cepc));
+						do{
+							printf("Estado(SP):");
+							fgets(clt.estado,4,stdin);
+							
+							size_t len = strlen(clt.estado);
+						    if (len > 0 && clt.estado[len - 1] == '\n') {
+						        clt.estado[len - 1] = '\0';
+						    } else {
+						        int ch;
+						        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+						    }
+							if(!ValidarEstado(clt.estado))
+							{
+								printf("Estado Inv√°lido!\n");
+								system("pause");
+								printf("\033[A");    // Move o cursor 3 linhas para cima
+								printf("\033[2K");	// Apaga
+								printf("\033[A");    
+								printf("\033[2K");
+								printf("\033[A");    
+								printf("\033[2K");
+							}
+						}while(!ValidarEstado(clt.estado));
+						
+						do{
+							printf("Cidade: ");
+							fgets(clt.cidade,30,stdin);
+							if(CampoVazio(clt.cidade))
+							{
+								printf("Campo Vazio!\n");
+								system("pause");
+								printf("\033[A");    // Move o cursor 3 linhas para cima
+								printf("\033[2K");	// Apaga
+								printf("\033[A");    
+								printf("\033[2K");
+								printf("\033[A");    
+								printf("\033[2K");
+							}
+						}while(CampoVazio(clt.cidade));
+						
+						do{
+							printf("Bairro: ");
+							fgets(clt.bairro,50,stdin);
+							if(CampoVazio(clt.bairro))
+							{
+								printf("Campo Vazio!\n");
+								system("pause");
+								printf("\033[A");    // Move o cursor 3 linhas para cima
+								printf("\033[2K");	// Apaga
+								printf("\033[A");    
+								printf("\033[2K");
+								printf("\033[A");    
+								printf("\033[2K");
+							}
+						}while(CampoVazio(clt.bairro));
+						
+						do{
+							printf("Rua: ");
+							fgets(clt.rua,50,stdin);
+							if(CampoVazio(clt.rua))
+							{
+								printf("Campo Vazio!\n");
+								system("pause");
+								printf("\033[A");    // Move o cursor 3 linhas para cima
+								printf("\033[2K");	// Apaga
+								printf("\033[A");    
+								printf("\033[2K");
+								printf("\033[A");    
+								printf("\033[2K");
+							}
+						}while(CampoVazio(clt.rua));
+						
+						do{
+							printf("N√∫mero da Casa: ");
+							fgets(clt.numc,7,stdin);
+							
+							size_t len = strlen(clt.numc);
+						    if (len > 0 && clt.numc[len - 1] == '\n') {
+						        clt.numc[len - 1] = '\0';
+						    } else {
+						        int ch;
+						        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+						    }
+							if(!ValidarNum(clt.numc))
+							{
+								printf("Numero da Casa no maximo 5 digitos!\n");
+								system("pause");
+								printf("\033[A");    // Move o cursor 3 linhas para cima
+								printf("\033[2K");	// Apaga
+								printf("\033[A");    
+								printf("\033[2K");
+								printf("\033[A");    
+								printf("\033[2K");
+							}
+						}while(!ValidarNum(clt.numc));
+						
 						fseek(arq,pos,0);
 						fwrite(&clt,sizeof(DadosCliente),1,arq);
-						printf("EndereÁo Alterado!");
+						printf("Endere√ßo Alterado!\n");
 						system("pause");
 						system("cls");
 						break;
-					default:printf("OpÁ„o Inv·lida");
+					default:printf("Op√ß√£o Inv√°lida");
 							system("pause");
 						break;
 					case 0:break;
 				}
 			}
-			system("cls");
-			printf("Editar Clientes\n\nEntre com o CPF do cliente: (0 Para Voltar)");
-			scanf("%d",&clt.cpf);
+			do{
+				system("cls");
+				printf("Editar Clientes\n\nEntre com o CPF do cliente: (0 Para Voltar) ");
+				fgets(clt.cpfc,13,stdin);
+				
+				size_t len = strlen(clt.cpfc);
+			    if (len > 0 && clt.cpfc[len - 1] == '\n') {
+			        clt.cpfc[len - 1] = '\0';
+			    } else {
+			        int ch;
+			        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+			    }
+				
+				if(!ValidarCPF(clt.cpfc) && stricmp(clt.cpfc,"0")!=0)
+				{
+					printf("CPF Inv√°lido!\n");
+					system("pause");
+				}
+			}while(!ValidarCPF(clt.cpfc) && stricmp(clt.cpfc,"0")!=0);
+			
 		}
 		
 	}
@@ -175,7 +528,8 @@ void EditarCliente()
 void ExcluirCliente()
 {
 	char conf;
-	int pos,cpf;
+	int pos;//cpf;
+	char cpfc[13];
 	
 	DadosCliente clt;
 	FILE *arqcliente;
@@ -187,71 +541,102 @@ void ExcluirCliente()
 	}
 	else
 	{
-		system("cls");
-		printf("Excluir Cliente\n\nEntre com o CPF do cliente: ");
-		scanf("%d",&cpf);fflush(stdin);
-		
-		pos = VerificarCliente(arqcliente,cpf);
-		if(pos == -1)
-			printf("Cliente Inexistente!");
-		else
-		{
-			fseek(arqcliente,pos,0);
-			fread(&clt,sizeof(DadosCliente),1,arqcliente);
+		do{
+			system("cls");
+			printf("Excluir Cliente\n\nEntre com o CPF do cliente:(0 Para Voltar) ");
+			fgets(cpfc,13,stdin);
 			
-			do
+			size_t len = strlen(cpfc);
+		    if (len > 0 && cpfc[len - 1] == '\n') {
+		        cpfc[len - 1] = '\0';
+		    } else {
+		        int ch;
+		        while ((ch = getchar()) != '\n' && ch != EOF);
+		    }
+			
+			if(!ValidarCPF(cpfc) && stricmp(cpfc,"0")!=0)
 			{
-				system("cls");
-				printf("Excluir Cliente\n\nNome: %s",clt.nome);
-				printf("CPF: %d\n",clt.cpf);
-				printf("Telefone: %d\n--EndereÁo:\n",clt.tel);
-				printf("CEP: %d\n",clt.cep);
-				printf("Estado: %s",clt.estado);
-				printf("Cidade: %s",clt.cidade);
-				printf("Bairro: %s",clt.bairro);
-				printf("Rua: %s",clt.rua);
-				printf("N˙mero: %d\n----\n",clt.num);
-				printf("Confirma a exclus„o do cliente?(S/N) ");
-				scanf(" %c",&conf);fflush(stdin);
-				conf = toupper(conf);
-			}while(conf != 'S' && conf != 'N');
-			if(conf=='S')
+				printf("CPF Inv√°lido!\n");
+				system("pause");
+			}
+		}while(!ValidarCPF(cpfc) && stricmp(cpfc,"0")!=0);
+		if(stricmp(cpfc,"0")!=0)
+		{
+			pos = VerificarCliente(arqcliente,cpfc);
+				
+		    if (ClienteFezVenda(cpfc)) {
+		        printf("\nEste cliente j√° efetuou uma compra e n√£o pode ser exclu√≠do!\n");
+		        fclose(arqcliente);
+		        system("pause");
+		        return;
+		    }
+			if(pos == -1)
+				printf("Cliente Inexistente!");
+			else
 			{
-				FILE *arqtemp;
-				arqtemp = fopen("temp.bin","wb");
-				if(arqtemp == NULL)
+				fseek(arqcliente,pos,0);
+				fread(&clt,sizeof(DadosCliente),1,arqcliente);
+				
+				do
 				{
-					printf("Erro no arquivo tempor·rio!\n");
-					system("pause");
+					system("cls");
+					printf("Excluir Cliente\n\nNome: %s",clt.nome);
+					printf("CPF: %s\n",clt.cpfc);
+					printf("Telefone: %s\n--Endere√ßo:\n",clt.telc);
+					printf("CEP: %s\n",clt.cepc);
+					printf("Estado: %s",clt.estado);
+					printf("Cidade: %s",clt.cidade);
+					printf("Bairro: %s",clt.bairro);
+					printf("Rua: %s",clt.rua);
+					printf("N√∫mero: %s\n\n----\n",clt.numc);
+					printf("Confirma a exclus√£o do cliente?(S/N) ");
+					scanf(" %c",&conf);fflush(stdin);
+					conf = toupper(conf);
+				}while(conf != 'S' && conf != 'N');
+				if(conf=='S')
+				{
+					FILE *arqtemp;
+					arqtemp = fopen("temp.bin","wb");
+					if(arqtemp == NULL)
+					{
+						printf("Erro no arquivo tempor√°rio!\n");
+						system("pause");
+					}
+					else
+					{
+						rewind(arqcliente);
+						fread(&clt,sizeof(DadosCliente),1,arqcliente);
+						while(!feof(arqcliente))
+						{
+							if(stricmp(clt.cpfc,cpfc)!=0)//clt.cpf != cpf)
+								fwrite(&clt,sizeof(DadosCliente),1,arqtemp);
+							fread(&clt,sizeof(DadosCliente),1,arqcliente);
+						}
+						fclose(arqcliente);
+						fclose(arqtemp);
+						remove("Clientes.bin");
+						rename("temp.bin","Clientes.bin");
+						printf("Cliente excluido com sucesso!\n");
+						system("pause");	
+					}	
 				}
 				else
 				{
-					rewind(arqcliente);
-					fread(&clt,sizeof(DadosCliente),1,arqcliente);
-					while(!feof(arqcliente))
-					{
-						if(clt.cpf != cpf)
-							fwrite(&clt,sizeof(DadosCliente),1,arqtemp);
-						fread(&clt,sizeof(DadosCliente),1,arqcliente);
-					}
-					fclose(arqcliente);
-					fclose(arqtemp);
-					remove("Clientes.bin");
-					rename("temp.bin","Clientes.bin");
-					printf("Cliente excluido com sucesso!\n");	
-				}	
+					printf("Exclus√£o cancelada!\n");
+					system("pause");
+				}
 			}
 		}
 	}
-	system("pause");
+	
 	fclose(arqcliente);
 }
-int VerificarCliente(FILE *arq, int cpf) //verifica se ja existe
+int VerificarCliente(FILE *arq, char *cpfc) //verifica se ja existe
 {
 	DadosCliente clt;
 	rewind (arq);
 	fread(&clt,sizeof(DadosCliente),1,arq);
-	while(!feof(arq) && clt.cpf!=cpf)//stricmp(clt.cpf,cpf) != 0)
+	while(!feof(arq) && stricmp(clt.cpfc,cpfc) != 0)
 	{
 		fread(&clt,sizeof(DadosCliente),1,arq);
 	}
@@ -269,23 +654,21 @@ void ListarClientes()
 	FILE *arq;
 	arq = fopen("Clientes.bin","rb");
 	if(arq == NULL)
-		printf("\nErro no arquivo!");
+		printf("\nNenhum cliente cadastrado!");
 	else
 	{
 		fread(&clt,sizeof(DadosCliente),1,arq);
-		if(feof(arq))
-			printf("N„o h· clientes cadastrados!\n");
 		while(!feof(arq))
 		{
 			printf("Nome: %s",clt.nome);
-			printf("CPF: %d\n",clt.cpf);
-			printf("Telefone: %d\n",clt.tel);
-			printf("CEP: %d\n",clt.cep);
-			printf("Estado: %s",clt.estado);
+			printf("CPF: %s\n",clt.cpfc);
+			printf("Telefone: %s\n",clt.telc);
+			printf("CEP: %s\n",clt.cepc);
+			printf("Estado: %s\n",clt.estado);
 			printf("Cidade: %s",clt.cidade);
 			printf("Bairro: %s",clt.bairro);
 			printf("Rua: %s",clt.rua);
-			printf("N˙mero: %d\n----\n",clt.num);
+			printf("N√∫mero: %s\n\n----\n",clt.numc);
 			fread(&clt,sizeof(DadosCliente),1,arq);
 		}
 		
@@ -304,11 +687,27 @@ void BuscarCliente()
 		printf("\nErro no arquivo");
 	else
 	{
-		system("cls");
+		do{
+			system("cls");
+			printf("Buscar Cliente\n\nEntre com o CPF do cliente: ");
+			fgets(clt.cpfc,13,stdin);
+			
+			size_t len = strlen(clt.cpfc);
+		    if (len > 0 && clt.cpfc[len - 1] == '\n') {
+		        clt.cpfc[len - 1] = '\0';
+		    } else {
+		        int ch;
+		        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+		    }
+			
+			if(!ValidarCPF(clt.cpfc))
+			{
+				printf("CPF Inv√°lido!\n");
+				system("pause");
+			}
+		}while(!ValidarCPF(clt.cpfc));
 		
-		printf("Buscar Cliente\n\nEntre com o CPF do cliente: ");
-		scanf("%d",&clt.cpf);
-		pos = VerificarCliente(arq,clt.cpf);
+		pos = VerificarCliente(arq,clt.cpfc);
 		if(pos==-1)
 		{
 			printf("Cliente Inexistente!\n");
@@ -321,19 +720,55 @@ void BuscarCliente()
 			fseek(arq,pos,0);
 			fread(&clt,sizeof(DadosCliente),1,arq);
 			printf("Nome: %s",clt.nome);
-			printf("CPF: %d\n",clt.cpf);
-			printf("Telefone: %d\n",clt.tel);
-			printf("CEP: %d\n",clt.cep);
+			printf("CPF: %s\n",clt.cpfc);
+			printf("Telefone: %s\n",clt.telc);
+			printf("CEP: %s\n",clt.cepc);
 			printf("Estado: %s",clt.estado);
 			printf("Cidade: %s",clt.cidade);
 			printf("Bairro: %s",clt.bairro);
 			printf("Rua: %s",clt.rua);
-			printf("N˙mero: %d\n",clt.num);
+			printf("N√∫mero: %s\n",clt.numc);
 			system("pause");
 		}
 		fclose(arq);
 	}
 }
+void OrdenarClientes()
+{
+	FILE *arq;
+	DadosCliente clt,clti;
+	int i,qtde=0;
+	arq = fopen("Clientes.bin","rb+");
+	if(arq == NULL)
+	  printf("Nenhum cliente cadastrado!\n");
+	else
+	{
+		fseek(arq,0,2);
+		qtde=ftell(arq)/sizeof(DadosCliente);
+		while(qtde>1)
+		{
+			for(i=0;i<qtde-1;i++)
+			{
+				fseek(arq,i*sizeof(DadosCliente),0);
+				fread(&clt,sizeof(DadosCliente),1,arq);
+				fseek(arq,(i+1)*sizeof(DadosCliente),0);
+				fread(&clti,sizeof(DadosCliente),1,arq);
+				if(stricmp(clt.nome,clti.nome)>0)
+				{
+					fseek(arq,i*sizeof(DadosCliente),0);
+					fwrite(&clti,sizeof(DadosCliente),1,arq);
+					fseek(arq,(i+1)*sizeof(DadosCliente),0);
+					fwrite(&clt,sizeof(DadosCliente),1,arq);
+				}
+			}
+			qtde--;
+		}
+		printf("\nArquivo ordenado\n");
+	}
+	fclose(arq);
+	system("pause");	
+}
+
 
 	//////	PRODUTOS  //////
 typedef struct{
@@ -354,29 +789,56 @@ void CadastrarProduto()
 	else
 	{
 		system("cls");
-		printf("Cadastro de Produtos, ServiÁos e Insumos\n\n");
-		printf("Tipo de Item:\n1- Produto\n2- ServiÁo\n3- Insumo\n0- Voltar\n\nOpÁ„o:");
+		printf("Cadastro de Produtos, Servi√ßos e Insumos\n\n");
+		printf("Tipo de Item:\n1- Produto\n2- Servi√ßo\n3- Insumo\n0- Voltar\n\nOp√ß√£o:");
 		scanf("%d",&tipo);fflush(stdin);
 		while(tipo<0 || tipo>3)
 		{
 			system("cls");
-			printf("Cadastro de Produtos, ServiÁos e Insumos\n\nTipo de item:\n1- Produto\n2- ServiÁo\n3- Insumo\n0- Voltar\n\nOpÁ„o:");
+			printf("Cadastro de Produtos, Servi√ßos e Insumos\n\nTipo de item:\n1- Produto\n2- Servi√ßo\n3- Insumo\n0- Voltar\n\nOp√ß√£o:");
 			scanf("%d",&tipo);fflush(stdin);
 		}
 		if(tipo!=0)
 		{
 			prod.tipo = tipo;
-			printf("Entre com o nome do Item: ");
-			fgets(prod.nome,100,stdin);
-			printf("CÛdigo do Produto: ");
+			do{
+				printf("Entre com o nome do Item: ");
+				fgets(prod.nome,100,stdin);
+				if(CampoVazio(prod.nome))
+				{
+					printf("Campo Vazio!\n");
+					system("pause");
+					printf("\033[A");    // Move o cursor 3 linhas para cima
+					printf("\033[2K");	// Apaga
+					printf("\033[A");    
+					printf("\033[2K");
+					printf("\033[A");    
+					printf("\033[2K");
+				}
+			}while(CampoVazio(prod.nome));
+			
+			printf("C√≥digo do Produto: ");
 			scanf("%d",&prod.cod);fflush(stdin);
 			pos = VerificarProduto(arq,prod.cod);
 			if(pos==-1)
 			{
+				do{
+					printf("Descri√ß√£o do Item: ");
+					fgets(prod.desc,50,stdin);
+					if(CampoVazio(prod.desc))
+					{
+						printf("Campo Vazio!\n");
+						system("pause");
+						printf("\033[A");    // Move o cursor 3 linhas para cima
+						printf("\033[2K");	// Apaga
+						printf("\033[A");    
+						printf("\033[2K");
+						printf("\033[A");    
+						printf("\033[2K");
+					}
+				}while(CampoVazio(prod.desc));
 				
-				printf("DescriÁ„o do Item: ");
-				fgets(prod.desc,50,stdin);
-				printf("PreÁo: ");
+				printf("Pre√ßo: ");
 				scanf("%f",&prod.preco);
 				prod.qtd = 0;
 				fwrite(&prod,sizeof(DadosProduto),1,arq);
@@ -385,19 +847,19 @@ void CadastrarProduto()
 			}
 			else
 			{
-				printf("\nItem j· cadastrado!\n\n");
+				printf("\nItem j√° cadastrado!\n\n");
 				fseek(arq,pos,0);
 				fread(&prod,sizeof(DadosProduto),1,arq);
 				if(prod.tipo==1)
 					printf("Tipo: Produto\n");
 				if(prod.tipo==2)
-					printf("Tipo: ServiÁo\n");
+					printf("Tipo: Servi√ßo\n");
 				if(prod.tipo==3)
 					printf("Tipo: Insumo\n");
 				printf("Nome: %s",prod.nome);
-				printf("DescriÁ„o: %s",prod.desc);
-				printf("CÛdigo: %d\n",prod.cod);
-				printf("PreÁo: %.2fR$\n",prod.preco);
+				printf("Descri√ß√£o: %s",prod.desc);
+				printf("C√≥digo: %d\n",prod.cod);
+				printf("Pre√ßo: %.2fR$\n",prod.preco);
 				printf("Quantidade em Estoque: %d\n",prod.qtd);
 				system("pause");
 			}
@@ -414,14 +876,14 @@ void EditarProduto()
 	arq = fopen("Produtos.bin","rb+");
 	if(arq == NULL)
 	{
-		printf("\nErro no arquivo Produtos!\n");
+		printf("\nNenhum item cadastrado!\n");
 		system("pause");
 	}
 	else
 	{
 		system("cls");
 		
-		printf("Editar Produtos, ServiÁos e Insumos\n\nEntre com o cod do Item: (0 Para Sair)");
+		printf("Editar Produtos, Servi√ßos e Insumos\n\nEntre com o cod do Item: (0 Para Sair)");
 		scanf("%d",&prod.cod);
 		while(prod.cod!=0)
 		{
@@ -438,66 +900,96 @@ void EditarProduto()
 				do
 				{
 					system("cls");
-					printf("Editar Produtos, ServiÁos e Insumos\n\n");
+					printf("Editar Produtos, Servi√ßos e Insumos\n\n");
 					if(prod.tipo==1)
 						printf("Tipo: Produto\n");
 					if(prod.tipo==2)
-						printf("Tipo: ServiÁo\n");
+						printf("Tipo: Servi√ßo\n");
 					if(prod.tipo==3)
 						printf("Tipo: Insumo\n");
 					printf("Nome: %s",prod.nome);
-					printf("DescriÁ„o: %s",prod.desc);
-					printf("CÛdigo: %d\n",prod.cod);
-					printf("PreÁo: %.2fR$\n----\n",prod.preco);
-					printf("\nDeseja alterar: \n 1- Nome \n 2- DescriÁ„o\n 3- CÛdigo\n 4- PreÁo\n 0- Voltar\n\n OpÁ„o: ");
+					printf("Descri√ß√£o: %s",prod.desc);
+					printf("C√≥digo: %d\n",prod.cod);
+					printf("Pre√ßo: %.2fR$\n----\n",prod.preco);
+					printf("\nDeseja alterar: \n 1- Nome \n 2- Descri√ß√£o\n 3- C√≥digo\n 4- Pre√ßo\n 0- Voltar\n\n Op√ß√£o: ");
 					scanf("%d",&op);fflush(stdin);
 				}while(op<0 || op>4);
 				if(op!=0)
 					switch(op)
 					{
 						case 1:
-							printf("Novo Nome: ");
-							fgets(prod.nome,100,stdin);
+							
+							do{
+								printf("Novo Nome: ");
+								fgets(prod.nome,100,stdin);
+								if(CampoVazio(prod.nome))
+								{
+									printf("Campo Vazio!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(CampoVazio(prod.nome));
+							
 							fseek(arq,pos,0);
 							fwrite(&prod,sizeof(DadosProduto),1,arq);
-							printf("Nome Alterado!");
+							printf("Nome Alterado!\n");
 							system("pause");
 							system("cls");
 							break;
 						case 2:
-							printf("Nova DescriÁ„o: ");
-							fgets(prod.desc,50,stdin);
+							
+							do{
+								printf("Nova Descri√ß√£o: ");
+								fgets(prod.desc,50,stdin);
+								if(CampoVazio(prod.desc))
+								{
+									printf("Campo Vazio!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(CampoVazio(prod.desc));
+							
 							fseek(arq,pos,0);
 							fwrite(&prod,sizeof(DadosProduto),1,arq);
-							printf("DescriÁ„o Alterada!");
+							printf("Descri√ß√£o Alterada!\n");
 							system("pause");
 							system("cls");
 							break;
 						case 3:
-							printf("Novo CÛdigo: ");
+							printf("Novo C√≥digo: ");
 							scanf("%d",&prod.cod);fflush(stdin);
 							fseek(arq,pos,0);
 							fwrite(&prod,sizeof(DadosProduto),1,arq);
-							printf("CÛdigo Alterado!");
+							printf("C√≥digo Alterado!\n");
 							system("pause");
 							system("cls");
 							break;
 						case 4:
-							printf("Novo PreÁo: ");
+							printf("Novo Pre√ßo: ");
 							scanf("%f",&prod.preco);fflush(stdin);
 							fseek(arq,pos,0);
 							fwrite(&prod,sizeof(DadosProduto),1,arq);
-							printf("PreÁo Alterado!");
+							printf("Pre√ßo Alterado!\n");
 							system("pause");
 							system("cls");
 							break;
-						default: printf("OpÁ„o Inv·lida!");
+						default: printf("Op√ß√£o Inv√°lida!\n");
 								system("pause");
 							break;
 					}
 			}
 			system("cls");
-			printf("Editar Produtos, ServiÁos e Insumos\n\nEntre com o cod do Produto/ServiÁo: (0 Para Sair)");
+			printf("Editar Produtos, Servi√ßos e Insumos\n\nEntre com o cod do Produto/Servi√ßo: (0 Para Sair)");
 			scanf("%d",&prod.cod);
 		}
 		
@@ -515,17 +1007,17 @@ void ExcluirProduto()
 	arqprod = fopen("Produtos.bin","rb");
 	if(arqprod == NULL)
 	{
-		printf("Erro no arquivo Produtos!\n");
+		printf("Nenhum item cadastrado!\n");
 		system("pause");
 	}
 	else
 	{
 		system("cls");
-		printf("Excluir Item\n\nTipo de Item:\n 1- Produto\n 2- ServiÁo\n 3- Insumo\n 0- Voltar\n\n OpÁ„o:");
+		printf("Excluir Item\n\nTipo de Item:\n 1- Produto\n 2- Servi√ßo\n 3- Insumo\n 0- Voltar\n\n Op√ß√£o:");
 		scanf("%d",&tipo);fflush(stdin);
 		if(tipo!=0)
 		{
-			printf("Entre com o cÛdigo do Item: ");
+			printf("Entre com o c√≥digo do Item: ");
 			scanf("%d",&cod);fflush(stdin);
 			
 			pos = VerificarProduto(arqprod,cod);
@@ -542,15 +1034,15 @@ void ExcluirProduto()
 					if(prod.tipo==1)
 					printf("Tipo: Produto\n");
 					if(prod.tipo==2)
-						printf("Tipo: ServiÁo\n");
+						printf("Tipo: Servi√ßo\n");
 					if(prod.tipo==3)
 						printf("Tipo: Insumo\n");
-					printf("DescriÁ„o: %s",prod.desc);
-					printf("CÛdigo: %d\n",prod.cod);
-					printf("PreÁo: %.2fR$\n",prod.preco);
+					printf("Descri√ß√£o: %s",prod.desc);
+					printf("C√≥digo: %d\n",prod.cod);
+					printf("Pre√ßo: %.2fR$\n",prod.preco);
 					printf("Quantidade em Estoque: %d\n----\n\n",prod.qtd);
 					
-					printf("Confirma a exclus„o do produto?(S/N) ");
+					printf("Confirma a exclus√£o do produto?(S/N) ");
 					scanf(" %c",&conf);fflush(stdin);
 					conf = toupper(conf);
 				}while(conf != 'S' && conf != 'N');
@@ -560,7 +1052,7 @@ void ExcluirProduto()
 					arqtemp = fopen("temp.bin","wb");
 					if(arqtemp == NULL)
 					{
-						printf("Erro no arquivo tempor·rio!\n");
+						printf("Erro no arquivo tempor√°rio!\n");
 						system("pause");
 					}
 					else
@@ -581,7 +1073,7 @@ void ExcluirProduto()
 					}	
 				}
 				else
-					printf("Exclus„o cancelada!\n");
+					printf("Exclus√£o cancelada!\n");
 			}
 			system("pause");
 		}
@@ -607,19 +1099,19 @@ void ListarProdutos()
 {
 	system("cls");
 	int tipo;
-	printf("Tipo de Item a Listar:\n 1- Produto\n 2- ServiÁo\n 3- Insumo\n OpÁ„o:");
+	printf("Tipo de Item a Listar:\n 1- Produto\n 2- Servi√ßo\n 3- Insumo\n Op√ß√£o:");
 	scanf("%d",&tipo);fflush(stdin);
 	while(tipo!=1 && tipo!=2 && tipo!=3)
 	{
 		system("cls");
-		printf("Tipo de item:\n 1- Produto\n 2- ServiÁo\n 3- Insumo\n OpÁ„o:");
+		printf("Tipo de item:\n 1- Produto\n 2- Servi√ßo\n 3- Insumo\n Op√ß√£o:");
 		scanf("%d",&tipo);fflush(stdin);
 	}
 	system("cls");
 	if(tipo==1)
 		printf("Listar Produtos\n\n");
 	if(tipo==2)
-		printf("Listar ServiÁos\n\n");
+		printf("Listar Servi√ßos\n\n");
 	if(tipo==3)
 		printf("Listar Insumos\n\n");
 	
@@ -629,25 +1121,20 @@ void ListarProdutos()
 	arq = fopen("Produtos.bin","rb");
 	if(arq == NULL)
 	{
-		printf("\nErro no arquivo!\n");
+		printf("\nNenhum item cadastrado!\n");
 		system("pause");
 	}
 	else
 	{
 		fread(&prod,sizeof(DadosProduto),1,arq);
-		if(feof(arq))
-		{
-			printf("N„o h· produtos cadastrados!\n");
-			system("pause");
-		}
 		while(!feof(arq))
 		{
 			if(tipo==prod.tipo)
 			{
 				printf("Nome: %s",prod.nome);
-				printf("DescriÁ„o: %s",prod.desc);
-				printf("CÛdigo: %d\n",prod.cod);
-				printf("PreÁo: %.2fR$\n",prod.preco);
+				printf("Descri√ß√£o: %s",prod.desc);
+				printf("C√≥digo: %d\n",prod.cod);
+				printf("Pre√ßo: %.2fR$\n",prod.preco);
 				printf("Quantidade: %d\n----\n",prod.qtd);
 			}
 			
@@ -670,7 +1157,7 @@ void BuscarProduto()
 	{
 		system("cls");
 		
-		printf("Buscar Produtos, ServiÁos e Insumos\n\nEntre com o CÛdigo do Item: ");
+		printf("Buscar Produtos, Servi√ßos e Insumos\n\nEntre com o C√≥digo do Item: ");
 		scanf("%d",&prod.cod);
 		pos = VerificarProduto(arq,prod.cod);
 		if(pos==-1)
@@ -681,19 +1168,19 @@ void BuscarProduto()
 		else
 		{
 			system("cls");
-			printf("Buscar Produtos, ServiÁos e Insumos\n\nDados do Item:\n\n");
+			printf("Buscar Produtos, Servi√ßos e Insumos\n\nDados do Item:\n\n");
 			fseek(arq,pos,0);
 			fread(&prod,sizeof(DadosProduto),1,arq);
 			if(prod.tipo==1)
 				printf("Tipo: Produto\n");
 			if(prod.tipo==2)
-				printf("Tipo: ServiÁo\n");
+				printf("Tipo: Servi√ßo\n");
 			if(prod.tipo==3)
 				printf("Tipo: Insumo\n");
 			printf("Nome: %s",prod.nome);
-			printf("DescriÁ„o: %s",prod.desc);
-			printf("CÛdigo: %d\n",prod.cod);
-			printf("PreÁo: %.2fR$\n",prod.preco);
+			printf("Descri√ß√£o: %s",prod.desc);
+			printf("C√≥digo: %d\n",prod.cod);
+			printf("Pre√ßo: %.2fR$\n",prod.preco);
 			printf("Quantidade: %d\n",prod.qtd);
 			system("pause");
 		}
@@ -722,12 +1209,91 @@ void AtualizarEstoque(int cod,int qtddev)
 	}
 	fclose(arqprod);
 }
+void OrdenarProdutos()
+{
+	FILE *arq;
+	DadosProduto clt,clti;
+	int i,qtde=0;
+	arq = fopen("Produtos.bin","rb+");
+	if(arq == NULL)
+	  return;
+	else
+	{
+		fseek(arq,0,2);
+		qtde=ftell(arq)/sizeof(DadosProduto);
+		while(qtde>1)
+		{
+			for(i=0;i<qtde-1;i++)
+			{
+				fseek(arq,i*sizeof(DadosProduto),0);
+				fread(&clt,sizeof(DadosProduto),1,arq);
+				fseek(arq,(i+1)*sizeof(DadosProduto),0);
+				fread(&clti,sizeof(DadosProduto),1,arq);
+				if(stricmp(clt.nome,clti.nome)>0)
+				{
+					fseek(arq,i*sizeof(DadosProduto),0);
+					fwrite(&clti,sizeof(DadosProduto),1,arq);
+					fseek(arq,(i+1)*sizeof(DadosProduto),0);
+					fwrite(&clt,sizeof(DadosProduto),1,arq);
+				}
+			}
+			qtde--;
+		}
+	}
+	fclose(arq);
+}
+void OrdenarProdutosQtd(int menor)
+{
+	FILE *arq;
+	DadosProduto clt,clti;
+	int i,qtde=0;
+	arq = fopen("Produtos.bin","rb+");
+	if(arq == NULL)
+	  return;
+	else
+	{
+		fseek(arq,0,2);
+		qtde=ftell(arq)/sizeof(DadosProduto);
+		while(qtde>1)
+		{
+			for(i=0;i<qtde-1;i++)
+			{
+				fseek(arq,i*sizeof(DadosProduto),0);
+				fread(&clt,sizeof(DadosProduto),1,arq);
+				fseek(arq,(i+1)*sizeof(DadosProduto),0);
+				fread(&clti,sizeof(DadosProduto),1,arq);
+				if(menor)
+				{
+					if(clt.qtd>clti.qtd)// Ordena menor pro maior
+					{
+						fseek(arq,i*sizeof(DadosProduto),0);
+						fwrite(&clti,sizeof(DadosProduto),1,arq);
+						fseek(arq,(i+1)*sizeof(DadosProduto),0);
+						fwrite(&clt,sizeof(DadosProduto),1,arq);
+					}
+				}
+				else
+				{
+					if(clt.qtd<clti.qtd) /// Ordena maior pro menor
+					{
+						fseek(arq,i*sizeof(DadosProduto),0);
+						fwrite(&clti,sizeof(DadosProduto),1,arq);
+						fseek(arq,(i+1)*sizeof(DadosProduto),0);
+						fwrite(&clt,sizeof(DadosProduto),1,arq);
+					}
+				}
+			}
+			qtde--;
+		}
+	}
+	fclose(arq);	
+}
 
 	//////  FORNECEDORES  //////
 	
 typedef struct{
 	char nome[101],categ[51],estado[5],cidade[31],bairro[31],rua[51];
-	int cnpj,cep,num;
+	char cnpjc[16],cepc[10],numc[7];
 }DadosFornecedor;
 void CadastrarFornecedor()
 {
@@ -740,29 +1306,179 @@ void CadastrarFornecedor()
 		printf("\nErro no arquivo");
 	else
 	{
-		system("cls");
+		do{
+			system("cls");
+			printf("Cadastro de Fornecedores\n\nEntre com o nome do Fornecedor: ");
+			fgets(fornecedor.nome,100,stdin);
+			if(CampoVazio(fornecedor.nome))
+			{
+				printf("Campo Vazio!\n");
+				system("pause");
+			}
+		}while(CampoVazio(fornecedor.nome));
 		
-		printf("Cadastro de Fornecedores\n\nEntre com o nome do Fornecedor: ");
-		fgets(fornecedor.nome,100,stdin);
-		printf("CNPJ : ");
-		scanf("%d",&fornecedor.cnpj);fflush(stdin);
-		pos = VerificarFornecedor(arq,fornecedor.cnpj);
+		do{
+			printf("CNPJ: ");
+			fgets(fornecedor.cnpjc,16,stdin);
+			
+			size_t len = strlen(fornecedor.cnpjc);
+		    if (len > 0 && fornecedor.cnpjc[len - 1] == '\n') {
+		        fornecedor.cnpjc[len - 1] = '\0';
+		    } else {
+		        int ch;
+		        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+		    }
+			
+			if(!ValidarCNPJ(fornecedor.cnpjc))
+			{
+				printf("CNPJ Inv√°lido!\n");
+				system("pause");
+				printf("\033[A");    // Move o cursor 3 linhas para cima
+				printf("\033[2K");	// Apaga
+				printf("\033[A");    
+				printf("\033[2K");
+				printf("\033[A");    
+				printf("\033[2K");
+			}
+		}while(!ValidarCNPJ(fornecedor.cnpjc));
+		
+		pos = VerificarFornecedor(arq,fornecedor.cnpjc);
 		if(pos==-1)
 		{
+			do{
 			printf("Categoria de Produtos: ");
 			fgets(fornecedor.categ,50,stdin);
-			printf("CEP: ");
-			scanf("%d",&fornecedor.cep);fflush(stdin);
-			printf("Estado(SP): ");
-			fgets(fornecedor.estado,4,stdin);
-			printf("Cidade: ");
-			fgets(fornecedor.cidade,30,stdin);
-			printf("Bairro: ");
-			fgets(fornecedor.bairro,30,stdin);
-			printf("Rua: ");
-			fgets(fornecedor.rua,50,stdin);
-			printf("N˙mero: ");
-			scanf("%d",&fornecedor.num);fflush(stdin);
+			if(CampoVazio(fornecedor.categ))
+			{
+				printf("Campo Vazio!\n");
+				system("pause");
+				printf("\033[A");    // Move o cursor 3 linhas para cima
+				printf("\033[2K");	// Apaga
+				printf("\033[A");    
+				printf("\033[2K");
+				printf("\033[A");    
+				printf("\033[2K");
+			}
+		}while(CampoVazio(fornecedor.categ));
+			
+			do{
+				printf("CEP: ");
+				fgets(fornecedor.cepc,10,stdin);
+				size_t len = strlen(fornecedor.cepc);
+			    if (len > 0 && fornecedor.cepc[len - 1] == '\n') {
+			        fornecedor.cepc[len - 1] = '\0';
+			    } else {
+			        int ch;
+			        while ((ch = getchar()) != '\n' && ch != EOF);
+			    }
+				if(!ValidarCep(fornecedor.cepc))
+				{
+					printf("CEP Inv√°lido!\n");
+					system("pause");
+					printf("\033[A");    // Move o cursor 3 linhas para cima
+					printf("\033[2K");	// Apaga
+					printf("\033[A");    
+					printf("\033[2K");
+					printf("\033[A");    
+					printf("\033[2K");
+				}
+			}while(!ValidarCep(fornecedor.cepc));
+			
+			do{
+				printf("Estado(SP):");
+				fgets(fornecedor.estado,4,stdin);
+				
+				size_t len = strlen(fornecedor.estado);
+			    if (len > 0 && fornecedor.estado[len - 1] == '\n') {
+			        fornecedor.estado[len - 1] = '\0';
+			    } else {
+			        int ch;
+			        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+			    }
+				if(!ValidarEstado(fornecedor.estado))
+				{
+					printf("Estado Inv√°lido!\n");
+					system("pause");
+					printf("\033[A");    // Move o cursor 3 linhas para cima
+					printf("\033[2K");	// Apaga
+					printf("\033[A");    
+					printf("\033[2K");
+					printf("\033[A");    
+					printf("\033[2K");
+				}
+			}while(!ValidarEstado(fornecedor.estado));
+			
+			do{
+				printf("Cidade: ");
+				fgets(fornecedor.cidade,30,stdin);
+				if(CampoVazio(fornecedor.cidade))
+				{
+					printf("Campo Vazio!\n");
+					system("pause");
+					printf("\033[A");    // Move o cursor 3 linhas para cima
+					printf("\033[2K");	// Apaga
+					printf("\033[A");    
+					printf("\033[2K");
+					printf("\033[A");    
+					printf("\033[2K");
+				}
+			}while(CampoVazio(fornecedor.cidade));
+			
+			do{
+				printf("Bairro: ");
+				fgets(fornecedor.bairro,30,stdin);
+				if(CampoVazio(fornecedor.bairro))
+				{
+					printf("Campo Vazio!\n");
+					system("pause");
+					printf("\033[A");    // Move o cursor 3 linhas para cima
+					printf("\033[2K");	// Apaga
+					printf("\033[A");    
+					printf("\033[2K");
+					printf("\033[A");    
+					printf("\033[2K");
+				}
+			}while(CampoVazio(fornecedor.bairro));
+			
+			do{
+				printf("Rua: ");
+				fgets(fornecedor.rua,50,stdin);
+				if(CampoVazio(fornecedor.rua))
+				{
+					printf("Campo Vazio!\n");
+					system("pause");
+					printf("\033[A");    // Move o cursor 3 linhas para cima
+					printf("\033[2K");	// Apaga
+					printf("\033[A");    
+					printf("\033[2K");
+					printf("\033[A");    
+					printf("\033[2K");
+				}
+			}while(CampoVazio(fornecedor.rua));
+			
+			do{
+				printf("N√∫mero: ");
+				fgets(fornecedor.numc,7,stdin);
+				
+				size_t len = strlen(fornecedor.numc);
+			    if (len > 0 && fornecedor.numc[len - 1] == '\n') {
+			        fornecedor.numc[len - 1] = '\0';
+			    } else {
+			        int ch;
+			        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+			    }
+				if(!ValidarNum(fornecedor.numc))
+				{
+					printf("Numero da Casa no maximo 5 digitos!\n");
+					system("pause");
+					printf("\033[A");    // Move o cursor 3 linhas para cima
+					printf("\033[2K");	// Apaga
+					printf("\033[A");    
+					printf("\033[2K");
+					printf("\033[A");    
+					printf("\033[2K");
+				}
+			}while(!ValidarNum(fornecedor.numc));
 			
 			fwrite(&fornecedor,sizeof(DadosFornecedor),1,arq);
 			printf("Fornecedor Cadastrado com Sucesso!\n");
@@ -770,18 +1486,18 @@ void CadastrarFornecedor()
 		}
 		else
 		{
-			printf("\nFornecedor j· cadastrado!\n\n");
+			printf("\nFornecedor j√° cadastrado!\n\n");
 			fseek(arq,pos,0);
 			fread(&fornecedor,sizeof(DadosFornecedor),1,arq);
 			printf("Nome: %s",fornecedor.nome);
-			printf("CNPJ: %d\n",fornecedor.cnpj);
+			printf("CNPJ: %s\n",fornecedor.cnpjc);
 			printf("Categoria: %s",fornecedor.categ);
-			printf("CEP: %d\n",fornecedor.cep);
-			printf("Estado: %s",fornecedor.estado);
+			printf("CEP: %s\n",fornecedor.cepc);
+			printf("Estado: %s\n",fornecedor.estado);
 			printf("Cidade: %s",fornecedor.cidade);
 			printf("Bairro: %s",fornecedor.bairro);
 			printf("Rua: %s",fornecedor.rua);
-			printf("N˙mero da Casa: %d",fornecedor.num);
+			printf("N√∫mero: %s\n",fornecedor.numc);
 			
 			system("pause");
 		}
@@ -799,13 +1515,29 @@ void EditarFornecedor()
 		printf("\nErro no arquivo");
 	else
 	{
-		system("cls");
+		do{
+			system("cls");
+			printf("Editar Fornecedor\n\nEntre com o CNPJ do Fornecedor: (0 Para Sair) ");
+			fgets(fornecedor.cnpjc,16,stdin);
+			
+			size_t len = strlen(fornecedor.cnpjc);
+		    if (len > 0 && fornecedor.cnpjc[len - 1] == '\n') {
+		        fornecedor.cnpjc[len - 1] = '\0';
+		    } else {
+		        int ch;
+		        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+		    }
+			
+			if(!ValidarCNPJ(fornecedor.cnpjc) && stricmp(fornecedor.cnpjc,"0")!=0)
+			{
+				printf("CNPJ Inv√°lido!\n");
+				system("pause");
+			}
+		}while(!ValidarCNPJ(fornecedor.cnpjc) && stricmp(fornecedor.cnpjc,"0")!=0);
 		
-		printf("Editar Fornecedor\n\nEntre com o CNPJ do Fornecedor: (0 Para Sair) ");
-		scanf("%d",&fornecedor.cnpj);
-		while(fornecedor.cnpj!=0)
+		while(stricmp(fornecedor.cnpjc,"0")!=0)
 		{
-			pos = VerificarFornecedor(arq,fornecedor.cnpj);
+			pos = VerificarFornecedor(arq,fornecedor.cnpjc);
 			if(pos==-1)
 			{
 				printf("Fornecedor Inexistente.\n");
@@ -819,32 +1551,69 @@ void EditarFornecedor()
 				{
 					system("cls");
 					printf("Editar Fornecedor\n\nNome: %s",fornecedor.nome);
-					printf("CNPJ: %d\n",fornecedor.cnpj);
-					printf("Categoria: %s--EndereÁo:\n",fornecedor.categ);
-					printf("CEP: %d\n",fornecedor.cep);
-					printf("Estado: %s",fornecedor.estado);
+					printf("CNPJ: %s\n",fornecedor.cnpjc);
+					printf("Categoria: %s--Endere√ßo:\n",fornecedor.categ);
+					printf("CEP: %s\n",fornecedor.cepc);
+					printf("Estado: %s\n",fornecedor.estado);
 					printf("Cidade: %s",fornecedor.cidade);
 					printf("Bairro: %s",fornecedor.bairro);
 					printf("Rua: %s",fornecedor.rua);
-					printf("N˙mero: %d\n",fornecedor.num);
-					printf("\nDeseja alterar: \n 1- Nome \n 2- CNPJ\n 3- Categoria\n 4- EndereÁo\n 0- Voltar\n\n OpÁ„o: ");
+					printf("N√∫mero: %s\n",fornecedor.numc);
+					printf("\nDeseja alterar: \n 1- Nome \n 2- CNPJ\n 3- Categoria\n 4- Endere√ßo\n 0- Voltar\n\n Op√ß√£o: ");
 					scanf("%d",&op);fflush(stdin);
 				}while(op<0 || op>4);
 				if(op!=0)
 					switch(op)
 					{
 						case 1:
-							printf("Novo Nome: ");
-							fgets(fornecedor.nome,100,stdin);
+							do{
+								printf("Novo Nome: ");
+								fgets(fornecedor.nome,100,stdin);
+								if(CampoVazio(fornecedor.nome))
+								{
+									printf("Campo Vazio!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(CampoVazio(fornecedor.nome));
+							
 							fseek(arq,pos,0);
 							fwrite(&fornecedor,sizeof(DadosFornecedor),1,arq);
-							printf("Nome Alterado!");
+							printf("Nome Alterado!\n");
 							system("pause");
 							system("cls");
 							break;
 						case 2:
-							printf("Novo CNPJ: ");
-							scanf("%d",&fornecedor.cnpj);
+							do{
+								printf("Novo CNPJ: ");
+								fgets(fornecedor.cnpjc,16,stdin);
+								
+								size_t len = strlen(fornecedor.cnpjc);
+							    if (len > 0 && fornecedor.cnpjc[len - 1] == '\n') {
+							        fornecedor.cnpjc[len - 1] = '\0';
+							    } else {
+							        int ch;
+							        while ((ch = getchar()) != '\n' && ch != EOF);
+							    }
+								
+								if(!ValidarCNPJ(fornecedor.cnpjc))
+								{
+									printf("CNPJ Inv√°lido!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(!ValidarCNPJ(fornecedor.cnpjc));
+							
 							fseek(arq,pos,0);
 							fwrite(&fornecedor,sizeof(DadosFornecedor),1,arq);
 							printf("CNPJ Alterado!");
@@ -852,41 +1621,180 @@ void EditarFornecedor()
 							system("cls");
 							break;
 						case 3:
-							printf("Nova Categoria: ");
-							fgets(fornecedor.categ,50,stdin);
+							do{
+								printf("Nova Categoria: ");
+								fgets(fornecedor.categ,100,stdin);
+								if(CampoVazio(fornecedor.categ))
+								{
+									printf("Campo Vazio!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(CampoVazio(fornecedor.categ));
+							
 							fseek(arq,pos,0);
 							fwrite(&fornecedor,sizeof(DadosFornecedor),1,arq);
-							printf("Nome Alterado!");
+							printf("Categoria Alterada!\n");
 							system("pause");
 							system("cls");
 							break;
 						case 4:
-							printf("CEP: ");
-							scanf("%d",&fornecedor.cep);fflush(stdin);
-							printf("Estado(SP): ");
-							fgets(fornecedor.estado,4,stdin);
-							printf("Cidade: ");
-							fgets(fornecedor.cidade,30,stdin);
-							printf("Bairro: ");
-							fgets(fornecedor.bairro,30,stdin);
-							printf("Rua: ");
-							fgets(fornecedor.rua,50,stdin);
-							printf("N˙mero: ");
-							scanf("%d",&fornecedor.num);fflush(stdin);
+							do{
+								printf("Novo CEP: ");
+								fgets(fornecedor.cepc,10,stdin);
+								
+								size_t len = strlen(fornecedor.cepc);
+							    if (len > 0 && fornecedor.cepc[len - 1] == '\n') {
+							        fornecedor.cepc[len - 1] = '\0';
+							    } else {
+							        int ch;
+							        while ((ch = getchar()) != '\n' && ch != EOF);
+							    }
+								if(!ValidarCep(fornecedor.cepc))
+								{
+									printf("CEP Inv√°lido!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(!ValidarCep(fornecedor.cepc));
+							
+							do{
+								printf("Estado(SP):");
+								fgets(fornecedor.estado,4,stdin);
+								
+								size_t len = strlen(fornecedor.estado);
+							    if (len > 0 && fornecedor.estado[len - 1] == '\n') {
+							        fornecedor.estado[len - 1] = '\0';
+							    } else {
+							        int ch;
+							        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+							    }
+								if(!ValidarEstado(fornecedor.estado))
+								{
+									printf("Estado Inv√°lido!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(!ValidarEstado(fornecedor.estado));
+							
+							do{
+								printf("Cidade: ");
+								fgets(fornecedor.cidade,30,stdin);
+								if(CampoVazio(fornecedor.cidade))
+								{
+									printf("Campo Vazio!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(CampoVazio(fornecedor.cidade));
+							
+							do{
+								printf("Bairro: ");
+								fgets(fornecedor.bairro,30,stdin);
+								if(CampoVazio(fornecedor.bairro))
+								{
+									printf("Campo Vazio!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(CampoVazio(fornecedor.bairro));
+							
+							do{
+								printf("Rua: ");
+								fgets(fornecedor.rua,50,stdin);
+								if(CampoVazio(fornecedor.rua))
+								{
+									printf("Campo Vazio!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(CampoVazio(fornecedor.rua));
+							
+							do{
+								printf("N√∫mero: ");
+								fgets(fornecedor.numc,7,stdin);
+								
+								size_t len = strlen(fornecedor.numc);
+							    if (len > 0 && fornecedor.numc[len - 1] == '\n') {
+							        fornecedor.numc[len - 1] = '\0';
+							    } else {
+							        int ch;
+							        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+							    }
+								if(!ValidarNum(fornecedor.numc))
+								{
+									printf("Numero da Casa no maximo 5 digitos!\n");
+									system("pause");
+									printf("\033[A");    // Move o cursor 3 linhas para cima
+									printf("\033[2K");	// Apaga
+									printf("\033[A");    
+									printf("\033[2K");
+									printf("\033[A");    
+									printf("\033[2K");
+								}
+							}while(!ValidarNum(fornecedor.numc));
+							
 							fseek(arq,pos,0);
 							fwrite(&fornecedor,sizeof(DadosFornecedor),1,arq);
-							printf("EndereÁo Alterado!");
+							printf("Endere√ßo Alterado!");
 							system("pause");
 							system("cls");
 							break;
-						default:printf("OpÁ„o Inv·lida");
+						default:printf("Op√ß√£o Inv√°lida");
 						system("pause");
 							break;
 					}
 			}
-			system("cls");
-			printf("Editar Fornecedor\n\nEntre com o CNPJ do Fornecedor: (0 Para Sair)");
-			scanf("%d",&fornecedor.cnpj);
+			do{
+				system("cls");
+				printf("Editar Fornecedor\n\nEntre com o CNPJ do Fornecedor: (0 Para Sair) ");
+				fgets(fornecedor.cnpjc,16,stdin);
+				
+				size_t len = strlen(fornecedor.cnpjc);
+			    if (len > 0 && fornecedor.cnpjc[len - 1] == '\n') {
+			        fornecedor.cnpjc[len - 1] = '\0';
+			    } else {
+			        int ch;
+			        while ((ch = getchar()) != '\n' && ch != EOF);
+			    }
+				
+				if(!ValidarCNPJ(fornecedor.cnpjc) && stricmp(fornecedor.cnpjc,"0")!=0)
+				{
+					printf("CNPJ Inv√°lido!\n");
+					system("pause");
+				}
+			}while(!ValidarCNPJ(fornecedor.cnpjc) && stricmp(fornecedor.cnpjc,"0")!=0);
+			
 		}
 	}
 	fclose(arq);
@@ -895,6 +1803,7 @@ void ExcluirFornecedor()
 {
 	char conf;
 	int pos,cnpj;
+	char cnpjc[16];
 	
 	DadosFornecedor fornecedor;
 	FILE *arqforn;
@@ -906,11 +1815,27 @@ void ExcluirFornecedor()
 	}
 	else
 	{
-		system("cls");
-		printf("Excluir Fornecedor\n\nEntre com o CNPJ do Fornecedor: ");
-		scanf("%d",&cnpj);fflush(stdin);
+		do{
+			system("cls");
+			printf("Excluir Fornecedor\n\nEntre com o CNPJ do Fornecedor: ");
+			fgets(cnpjc,16,stdin);
+			
+			size_t len = strlen(cnpjc);
+		    if (len > 0 && cnpjc[len - 1] == '\n') {
+		        cnpjc[len - 1] = '\0';
+		    } else {
+		        int ch;
+		        while ((ch = getchar()) != '\n' && ch != EOF);
+		    }
+			
+			if(!ValidarCNPJ(cnpjc))
+			{
+				printf("CNPJ Inv√°lido!\n");
+				system("pause");
+			}
+		}while(!ValidarCNPJ(cnpjc));
 		
-		pos = VerificarFornecedor(arqforn,cnpj);
+		pos = VerificarFornecedor(arqforn,cnpjc);
 		if(pos == -1)
 			printf("Fornecedor Inexistente!");
 		else
@@ -922,16 +1847,16 @@ void ExcluirFornecedor()
 			{
 				system("cls");
 				printf("Excluir Fornecedor\n\nNome: %s",fornecedor.nome);
-				printf("CNPJ: %d\n",fornecedor.cnpj);
-				printf("Categoria: %s--EndereÁo:\n",fornecedor.categ);
-				printf("CEP: %d\n",fornecedor.cep);
-				printf("Estado: %s",fornecedor.estado);
+				printf("CNPJ: %s\n",fornecedor.cnpjc);
+				printf("Categoria: %s--Endere√ßo:\n",fornecedor.categ);
+				printf("CEP: %s\n",fornecedor.cepc);
+				printf("Estado: %s\n",fornecedor.estado);
 				printf("Cidade: %s",fornecedor.cidade);
 				printf("Bairro: %s",fornecedor.bairro);
 				printf("Rua: %s",fornecedor.rua);
-				printf("N˙mero: %d\n",fornecedor.num);
+				printf("N√∫mero: %s\n",fornecedor.numc);
 				
-				printf("Confirma a exclus„o do Fornecedor?(S/N) ");
+				printf("Confirma a exclus√£o do Fornecedor?(S/N) ");
 				scanf(" %c",&conf);fflush(stdin);
 				conf = toupper(conf);
 			}while(conf != 'S' && conf != 'N');
@@ -941,7 +1866,7 @@ void ExcluirFornecedor()
 				arqtemp = fopen("temp.bin","wb");
 				if(arqtemp == NULL)
 				{
-					printf("Erro no arquivo tempor·rio!\n");
+					printf("Erro no arquivo tempor√°rio!\n");
 					system("pause");
 				}
 				else
@@ -950,7 +1875,7 @@ void ExcluirFornecedor()
 					fread(&fornecedor,sizeof(DadosFornecedor),1,arqforn);
 					while(!feof(arqforn))
 					{
-						if(fornecedor.cnpj != cnpj)
+						if(stricmp(fornecedor.cnpjc,cnpjc)!=0)//fornecedor.cnpj != cnpj)
 							fwrite(&fornecedor,sizeof(DadosFornecedor),1,arqtemp);
 						fread(&fornecedor,sizeof(DadosFornecedor),1,arqforn);
 					}
@@ -962,18 +1887,18 @@ void ExcluirFornecedor()
 				}	
 			}
 			else
-				printf("Exclus„o Cancelada!\n");
+				printf("Exclus√£o Cancelada!\n");
 		}
 	}
 	system("pause");
 	fclose(arqforn);
 }
-int VerificarFornecedor(FILE *arq, int cnpj)
+int VerificarFornecedor(FILE *arq, char *cnpjc)
 {
 	DadosFornecedor fornecedor;
 	rewind (arq);
 	fread(&fornecedor,sizeof(DadosFornecedor),1,arq);
-	while(!feof(arq) && fornecedor.cnpj!=cnpj )//stricmp(prod.nome,nome) != 0)
+	while(!feof(arq) && stricmp(fornecedor.cnpjc,cnpjc)!=0)//fornecedor.cnpj!=cnpj )
 	{
 		fread(&fornecedor,sizeof(DadosFornecedor),1,arq);
 	}
@@ -996,18 +1921,18 @@ void ListarFornecedores()
 	{
 		fread(&fornecedor,sizeof(DadosFornecedor),1,arq);
 		if(feof(arq))
-			printf("N„o h· Fornecedores cadastrados!\n");
+			printf("N√£o h√° Fornecedores cadastrados!\n");
 		while(!feof(arq))
 		{
 			printf("Nome: %s",fornecedor.nome);
-			printf("CNPJ: %d\n",fornecedor.cnpj);
-			printf("Categoria: %s--EndereÁo:\n",fornecedor.categ);
-			printf("CEP: %d\n",fornecedor.cep);
-			printf("Estado: %s",fornecedor.estado);
+			printf("CNPJ: %s\n",fornecedor.cnpjc);
+			printf("Categoria: %s--Endere√ßo:\n",fornecedor.categ);
+			printf("CEP: %s\n",fornecedor.cepc);
+			printf("Estado: %s\n",fornecedor.estado);
 			printf("Cidade: %s",fornecedor.cidade);
 			printf("Bairro: %s",fornecedor.bairro);
 			printf("Rua: %s",fornecedor.rua);
-			printf("N˙mero: %d\n-----\n\n",fornecedor.num);
+			printf("N√∫mero: %s\n-----\n\n",fornecedor.numc);
 			fread(&fornecedor,sizeof(DadosFornecedor),1,arq);
 		}
 	}
@@ -1025,11 +1950,27 @@ void BuscarFornecedor()
 		printf("\nErro no arquivo");
 	else
 	{
-		system("cls");
+		do{
+			system("cls");
+			printf("Buscar Fornecedor\n\nEntre com o CNPJ do Fornecedor: ");
+			fgets(fornecedor.cnpjc,16,stdin);
+			
+			size_t len = strlen(fornecedor.cnpjc);
+		    if (len > 0 && fornecedor.cnpjc[len - 1] == '\n') {
+		        fornecedor.cnpjc[len - 1] = '\0';
+		    } else {
+		        int ch;
+		        while ((ch = getchar()) != '\n' && ch != EOF);
+		    }
+			
+			if(!ValidarCNPJ(fornecedor.cnpjc))
+			{
+				printf("CNPJ Inv√°lido!\n");
+				system("pause");
+			}
+		}while(!ValidarCNPJ(fornecedor.cnpjc));
 		
-		printf("Buscar Fornecedor\n\nEntre com o CNPJ do Fornecedor: ");
-		scanf("%d",&fornecedor.cnpj);
-		pos = VerificarFornecedor(arq,fornecedor.cnpj);
+		pos = VerificarFornecedor(arq,fornecedor.cnpjc);
 		if(pos==-1)
 		{
 			printf("Fornecedor Inexistente!\n");
@@ -1042,31 +1983,70 @@ void BuscarFornecedor()
 			fseek(arq,pos,0);
 			fread(&fornecedor,sizeof(DadosFornecedor),1,arq);
 			printf("Nome: %s",fornecedor.nome);
-			printf("CNPJ: %d\n",fornecedor.cnpj);
+			printf("CNPJ: %s\n",fornecedor.cnpjc);
 			printf("Categoria: %s",fornecedor.categ);
-			printf("CEP: %d\n",fornecedor.cep);
-			printf("Estado: %s",fornecedor.estado);
+			printf("CEP: %s\n",fornecedor.cepc);
+			printf("Estado: %s\n",fornecedor.estado);
 			printf("Cidade: %s",fornecedor.cidade);
 			printf("Bairro: %s",fornecedor.bairro);
 			printf("Rua: %s",fornecedor.rua);
-			printf("N˙mero: %d\n\n",fornecedor.num);
+			printf("N√∫mero: %s\n\n",fornecedor.numc);
 			system("pause");
 		}
 		fclose(arq);
 	}
 }
+void OrdenarFornecedores()
+{
+	FILE *arq;
+	DadosFornecedor clt,clti;
+	int i,qtde=0;
+	arq = fopen("Fornecedores.bin","rb+");
+	if(arq == NULL)
+	  printf("Nenhum Fornecedor cadastrado!\n");
+	else
+	{
+		fseek(arq,0,2);
+		qtde=ftell(arq)/sizeof(DadosFornecedor);
+		while(qtde>1)
+		{
+			for(i=0;i<qtde-1;i++)
+			{
+				fseek(arq,i*sizeof(DadosFornecedor),0);
+				fread(&clt,sizeof(DadosFornecedor),1,arq);
+				fseek(arq,(i+1)*sizeof(DadosFornecedor),0);
+				fread(&clti,sizeof(DadosFornecedor),1,arq);
+				if(stricmp(clt.nome,clti.nome)>0)
+				{
+					fseek(arq,i*sizeof(DadosFornecedor),0);
+					fwrite(&clti,sizeof(DadosFornecedor),1,arq);
+					fseek(arq,(i+1)*sizeof(DadosFornecedor),0);
+					fwrite(&clt,sizeof(DadosFornecedor),1,arq);
+				}
+			}
+			qtde--;
+		}
+		printf("Arquivo Ordenado!\n");
+	}
+	fclose(arq);
+	system("pause");
+}
+
 		
 	//////  COMPRAS  //////
 
-	
 typedef struct{
-	int cnpj;
+	int dia,mes,ano;
+}DataCompra;
+typedef struct{
+	char cnpjc[16];
 	int cod,qtd;  
 	float valortot,precoUni;
 	char fornecedor[101],nomeprod[101],MetPag[21];
 	int CodNota;
-	int devolucao;         //devoluÁ„o mostra a quantidade que foi devolvida
-	char motivo[101];	   //Motivo de devoluÁ„o
+	int devolucao;         //devolu√ß√£o mostra a quantidade que foi devolvida
+	char motivo[101];	   //Motivo de devolu√ß√£o
+	DataCompra dma;
 }Compra;
 void CadastrarCompra()
 {
@@ -1074,22 +2054,39 @@ void CadastrarCompra()
 	DadosProduto prod;
 	Compra compra;
 	int posforn,posprod;
-	int cnpj,cod,qtd,pag;				// pag = MÈtodo de pagamento:\n\n1- Pix\n2- Cart„o crÈdito\n3- Cart„o dÈbito\n4- Dinheiro
+	int cnpj,cod,qtd,pag;				// pag = M√©todo de pagamento:\n\n1- Pix\n2- Cart√£o cr√©dito\n3- Cart√£o d√©bito\n4- Dinheiro
 	char conf,MetPag[21];
 	
 	int StatusCaixa;
 	StatusCaixa = VerificarCaixa();
 	if(StatusCaixa == 0)
 	{
-		printf("Caixa est· fechado! Favor abrir o caixa antes de operar!\n");
+		printf("Caixa est√° fechado! Favor abrir o caixa antes de operar!\n");
 		system("pause");
 	}
 	else
 	{
-		system("cls");
-		printf("Efetuar Compra\n\nEntre com o CNPJ do Fornecedor: (0 Para Voltar)");
-		scanf("%d",&compra.cnpj);fflush(stdin);
-		while(compra.cnpj!=0)
+		do{
+			system("cls");
+			printf("Efetuar Compra\n\nEntre com o CNPJ do Fornecedor: (0 Para Voltar) ");
+			fgets(compra.cnpjc,16,stdin);
+			
+			size_t len = strlen(compra.cnpjc);
+		    if (len > 0 && compra.cnpjc[len - 1] == '\n') {
+		        compra.cnpjc[len - 1] = '\0';
+		    } else {
+		        int ch;
+		        while ((ch = getchar()) != '\n' && ch != EOF);
+		    }
+			
+			if(!ValidarCNPJ(compra.cnpjc) && stricmp(compra.cnpjc,"0")!=0)
+			{
+				printf("CNPJ Inv√°lido!\n");
+				system("pause");
+			}
+		}while(!ValidarCNPJ(compra.cnpjc) && stricmp(compra.cnpjc,"0")!=0);
+		
+		while(stricmp(compra.cnpjc,"0")!=0)
 		{
 			FILE *arqforn;
 			arqforn = fopen("Fornecedores.bin","rb+");
@@ -1100,14 +2097,14 @@ void CadastrarCompra()
 			}
 			else
 			{
-				posforn = VerificarFornecedor(arqforn,compra.cnpj);
+				posforn = VerificarFornecedor(arqforn,compra.cnpjc);
 				if(posforn == -1){
 					printf("Fornecedor Inexistente!\n");
 					system("pause");
 				}
 				else
 				{
-					printf("CÛdigo do Item: ");
+					printf("C√≥digo do Item: ");
 					scanf("%d",&compra.cod);
 					FILE *arqprod;
 					arqprod = fopen("Produtos.bin","rb+");
@@ -1138,32 +2135,84 @@ void CadastrarCompra()
 								printf("Quantidade: ");
 								scanf("%d",&compra.qtd);fflush(stdin);
 								
-								printf("Valor Unit·rio: ");
+								printf("Valor Unit√°rio: ");
 								scanf("%f",&compra.precoUni);fflush(stdin);
 								do
 								{
 									system("cls");
-									printf("Efetuar Compra\n\nMÈtodo de pagamento:\n\n1- Pix\n2- Cart„o crÈdito\n3- Cart„o dÈbito\n4- Dinheiro\n\nOpÁ„o: ");
+									printf("Efetuar Compra\n\nM√©todo de pagamento:\n\n1- Pix\n2- Cart√£o cr√©dito\n3- Cart√£o d√©bito\n4- Dinheiro\n\nOp√ß√£o: ");
 									scanf("%d",&pag);fflush(stdin);										
 								}while(pag!=1 && pag!=2 && pag!=3 && pag!=4 );
 								switch(pag)
 								{
 									case 1: strcpy(compra.MetPag,"Pix");		
 									break;
-									case 2: strcpy(compra.MetPag,"Cart„o de CrÈdito");
+									case 2: strcpy(compra.MetPag,"Cart√£o de Cr√©dito");
 									break;
-									case 3: strcpy(compra.MetPag,"Cart„o de DÈbito");
+									case 3: strcpy(compra.MetPag,"Cart√£o de D√©bito");
 									break;
 									case 4: strcpy(compra.MetPag,"Dinheiro");
 									break;
 								}
 								system("cls");
+								
+								printf("Efetuar Compra\n\nData da Compra:");
+									do{
+										printf("Dia: ");
+										scanf("%d",&compra.dma.dia);
+										if(compra.dma.dia<1 || compra.dma.dia>31)
+										{
+											printf("Dia inv√°lido!\n");
+											system("pause");
+											printf("\033[A");    // Move o cursor 3 linhas para cima
+											printf("\033[2K");	// Apaga
+											printf("\033[A");    
+											printf("\033[2K");
+											printf("\033[A");    
+											printf("\033[2K");
+										}
+									}while(compra.dma.dia<1 || compra.dma.dia>31);
+									do{
+										printf("M√™s: ");
+										scanf("%d",&compra.dma.mes);
+										if(compra.dma.mes<1 || compra.dma.mes>12)
+										{
+											printf("M√™s inv√°lido!\n");
+											system("pause");
+											printf("\033[A");    // Move o cursor 3 linhas para cima
+											printf("\033[2K");	// Apaga
+											printf("\033[A");    
+											printf("\033[2K");
+											printf("\033[A");    
+											printf("\033[2K");
+										}
+									}while(compra.dma.mes<1 || compra.dma.mes>12);
+									
+									do{
+										printf("Ano: ");
+										scanf("%d",&compra.dma.ano);
+										if(compra.dma.ano<2020 || compra.dma.ano>2025)
+										{
+											printf("Ano inv√°lido, Por favor escolha entre 2020 e 2025!\n");
+											system("pause");
+											printf("\033[A");    // Move o cursor 3 linhas para cima
+											printf("\033[2K");	// Apaga
+											printf("\033[A");    
+											printf("\033[2K");
+											printf("\033[A");    
+											printf("\033[2K");
+										}
+									}while(compra.dma.ano<2021 || compra.dma.ano>2025);
+								
+								
 								fseek(arqforn,posforn,0);
 								fread(&fornecedor,sizeof(DadosFornecedor),1,arqforn);
 								fseek(arqprod,posprod,0);
 								fread(&prod,sizeof(DadosProduto),1,arqprod);
-								printf(" Dados da Compra:\n\n Fornecedor: %s Produto: %s DescriÁ„o: %s Quantidade: %d\n Valor Unit·rio: %.2fR$\n\n Valor Total: %.2fR$\n MÈtodo de Pagamento: %s\n"
-								,fornecedor.nome,prod.nome,prod.desc,compra.qtd,compra.precoUni,compra.precoUni*compra.qtd,compra.MetPag);	
+								system("cls");
+								printf(" Dados da Compra:\n\n Fornecedor: %s Produto: %s Descri√ß√£o: %s Quantidade: %d\n Valor Unit√°rio: %.2fR$\n\n "
+								"Valor Total: %.2fR$\n M√©todo de Pagamento: %s\nData da Compra: %d/%d/%d\n\n"
+								,fornecedor.nome,prod.nome,prod.desc,compra.qtd,compra.precoUni,compra.precoUni*compra.qtd,compra.MetPag,compra.dma.dia,compra.dma.mes,compra.dma.ano);	
 								conf = toupper(conf);
 								do
 								{
@@ -1190,15 +2239,16 @@ void CadastrarCompra()
 										case 'N':printf(" Compra Cancelada!\n");
 												 system("pause");
 										break;
-										default: printf(" OpÁ„o Inv·lida!\n");
+										default: printf(" Op√ß√£o Inv√°lida!\n");
 												 system("pause");
 										break;
 									}
 									if(conf!='S' && conf!='N')
 									{
 										system("cls");
-										printf(" Dados da Compra:\n\n Fornecedor: %s Produto: %s DescriÁ„o: %s Quantidade: %d\n Valor Unit·rio: %.2fR$\n\n Valor Total: %.2fR$\n MÈtodo de Pagamento: %s\n"
-										,fornecedor.nome,prod.nome,prod.desc,compra.qtd,compra.precoUni,compra.precoUni*compra.qtd,compra.MetPag);	
+										printf(" Dados da Compra:\n\n Fornecedor: %s Produto: %s Descri√ß√£o: %s Quantidade: %d\n Valor Unit√°rio: %.2fR$\n\n "
+										"Valor Total: %.2fR$\n M√©todo de Pagamento: %s\n Data da Compra: %d/%d/%d\n\n"
+										,fornecedor.nome,prod.nome,prod.desc,compra.qtd,compra.precoUni,compra.precoUni*compra.qtd,compra.MetPag,compra.dma.dia,compra.dma.mes,compra.dma.ano);	
 										
 									}
 								}while(conf!='S' && conf != 'N');
@@ -1210,30 +2260,128 @@ void CadastrarCompra()
 				}
 			fclose(arqforn);
 			}
-			system("cls");
-			printf("Efetuar Compra\n\nEntre com o CNPJ do Fornecedor: (0 Para Voltar)");
-			scanf("%d",&compra.cnpj);fflush(stdin);
+			do{
+				system("cls");
+				printf("Efetuar Compra\n\nEntre com o CNPJ do Fornecedor: (0 Para Voltar) ");
+				fgets(compra.cnpjc,16,stdin);
+				
+				size_t len = strlen(compra.cnpjc);
+			    if (len > 0 && compra.cnpjc[len - 1] == '\n') {
+			        compra.cnpjc[len - 1] = '\0';
+			    } else {
+			        int ch;
+			        while ((ch = getchar()) != '\n' && ch != EOF);
+			    }
+				
+				if(!ValidarCNPJ(compra.cnpjc) && stricmp(compra.cnpjc,"0")!=0)
+				{
+					printf("CNPJ Inv√°lido!\n");
+					system("pause");
+				}
+			}while(!ValidarCNPJ(compra.cnpjc) && stricmp(compra.cnpjc,"0")!=0);
 		}
 	}
-	
-	
 }
 void DevolucaoCompra()
 {
-	printf("FunÁ„o Em Desenvolvimento..");
+	printf("Fun√ß√£o Em Desenvolvimento..");
 	system("pause");
+}
+void OrdenarCompras()
+{
+	FILE *arq;
+	Compra clt,clti;
+	int i,qtde=0;
+	arq = fopen("Compras.bin","rb+");
+	if(arq == NULL)
+	  return;
+	else
+	{
+		fseek(arq,0,2);
+		qtde=ftell(arq)/sizeof(Compra);
+		while(qtde>1)
+		{
+			for(i=0;i<qtde-1;i++)
+			{
+				fseek(arq,i*sizeof(Compra),0);
+				fread(&clt,sizeof(Compra),1,arq);
+				fseek(arq,(i+1)*sizeof(Compra),0);
+				fread(&clti,sizeof(Compra),1,arq);
+				if(stricmp(clt.fornecedor,clti.fornecedor)>0)
+				{
+					fseek(arq,i*sizeof(Compra),0);
+					fwrite(&clti,sizeof(Compra),1,arq);
+					fseek(arq,(i+1)*sizeof(Compra),0);
+					fwrite(&clt,sizeof(Compra),1,arq);
+				}
+			}
+			qtde--;
+		}
+	}
+	fclose(arq);	
+}
+void OrdenarComprasValor(menor)
+{
+	FILE *arq;
+	Compra clt,clti;
+	int i,qtde=0;
+	arq = fopen("Compras.bin","rb+");
+	if(arq == NULL)
+		return;
+	else
+	{
+		fseek(arq,0,2);
+		qtde=ftell(arq)/sizeof(Compra);
+		while(qtde>1)
+		{
+			for(i=0;i<qtde-1;i++)
+			{
+				fseek(arq,i*sizeof(Compra),0);
+				fread(&clt,sizeof(Compra),1,arq);
+				fseek(arq,(i+1)*sizeof(Compra),0);
+				fread(&clti,sizeof(Compra),1,arq);
+				if(menor)
+				{
+					if(clt.valortot>clti.valortot) // Ordena menor pro maior
+					{
+						fseek(arq,i*sizeof(Compra),0);
+						fwrite(&clti,sizeof(Compra),1,arq);
+						fseek(arq,(i+1)*sizeof(Compra),0);
+						fwrite(&clt,sizeof(Compra),1,arq);
+					}
+				}
+				else
+				{
+					if(clt.valortot<clti.valortot) // Ordena maior pro menor
+					{
+						fseek(arq,i*sizeof(Compra),0);
+						fwrite(&clti,sizeof(Compra),1,arq);
+						fseek(arq,(i+1)*sizeof(Compra),0);
+						fwrite(&clt,sizeof(Compra),1,arq);
+					}
+				}
+			}
+			qtde--;
+		}
+	}
+	fclose(arq);	
 }
 
 	//////  VENDAS  ////// 
-	
+
 typedef struct{
-	int cpf,cod,qtd;
+	int dia,mes,ano;
+}DataVenda;
+typedef struct{
+	int cod,qtd;
 	float valortot,valorUni;
 	char cliente[101],nomeprod[101];
+	char cpfc[13];
 	char MetPag[21]; 
 	int CodNota;
-	int devolucao;         //devoluÁ„o mostra a quantidade que foi devolvida
-	char motivo[101];	   //Motivo de devoluÁ„o
+	int devolucao;         //devolu√ß√£o mostra a quantidade que foi devolvida
+	char motivo[101];	   //Motivo de devolu√ß√£o
+	DataVenda dma;
 }Venda;
 int ProximaNota()
 {
@@ -1270,21 +2418,39 @@ void CadastrarVenda()
 	Venda venda;
 	int ProxNota;
 	int poscliente,posprod;
-	int cpf,cod,qtd,pag;			// pag = MÈtodo de pagamento:\n\n1- Pix\n2- Cart„o crÈdito\n3- Cart„o dÈbito\n4- Dinheiro
+	int cod,qtd,pag;			// pag = M√©todo de pagamento:\n\n1- Pix\n2- Cart√£o cr√©dito\n3- Cart√£o d√©bito\n4- Dinheiro
 	int StatusCaixa;
 	char conf;
 	StatusCaixa = VerificarCaixa();
 	if(StatusCaixa == 0)
 	{
-		printf("Caixa est· fechado! Favor abrir o caixa antes de operar!\n");
+		printf("Caixa est√° fechado! Favor abrir o caixa antes de operar!\n");
 		system("pause");
 	}
 	else
 	{	
-		system("cls");
-		printf("Efetuar Venda\n\nEntre com o CPF do Cliente: (0 Para Voltar)");
-		scanf("%d",&venda.cpf);fflush(stdin);
-		while(venda.cpf!=0)
+		do{
+			system("cls");
+			printf("Efetuar Venda\n\nEntre com o CPF do Cliente: (0 Para Voltar) ");
+			fgets(venda.cpfc,13,stdin);
+			
+			size_t len = strlen(venda.cpfc);
+		    if (len > 0 && venda.cpfc[len - 1] == '\n') {
+		        venda.cpfc[len - 1] = '\0';
+		    } else {
+		        int ch;
+		        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+		    }
+		    
+			if(!ValidarCPF(venda.cpfc) && stricmp(venda.cpfc,"0")!=0)
+			{
+				printf("CPF Inv√°lido!\n");
+				system("pause");
+			}
+		}while(!ValidarCPF(venda.cpfc) && stricmp(venda.cpfc,"0")!=0);
+		
+		
+		while(stricmp(venda.cpfc,"0")!=0)//venda.cpf!=0)
 		{
 			FILE *arqcliente;
 			arqcliente = fopen("Clientes.bin","rb+");
@@ -1292,7 +2458,7 @@ void CadastrarVenda()
 				printf("Erro no arquivo Clientes!\n");
 			else
 			{
-				poscliente = VerificarCliente(arqcliente,venda.cpf);
+				poscliente = VerificarCliente(arqcliente,venda.cpfc);
 				if(poscliente == -1)
 				{
 					printf("Cliente Inexistente!\n");
@@ -1300,7 +2466,7 @@ void CadastrarVenda()
 				}
 				else
 				{
-					printf("CÛdigo do Produto: ");
+					printf("C√≥digo do Produto: ");
 					scanf("%d",&venda.cod);
 					FILE *arqprod;
 					arqprod = fopen("Produtos.bin","rb+");
@@ -1317,7 +2483,7 @@ void CadastrarVenda()
 							posprod = VerificarProduto(arqprod,venda.cod);
 							if(posprod == -1)
 							{
-								printf("Produto/ServiÁo Inexistente!\n");
+								printf("Produto/Servi√ßo Inexistente!\n");
 								system("pause");
 							}
 							else
@@ -1329,7 +2495,7 @@ void CadastrarVenda()
 									scanf("%d",&venda.qtd);fflush(stdin);
 									if(venda.qtd==0)
 									{
-										printf("Quantidade Inv·lida!\n");
+										printf("Quantidade Inv√°lida!\n");
 										system("pause");
 									}
 								}while(venda.qtd==0);
@@ -1349,24 +2515,74 @@ void CadastrarVenda()
 									do
 									{
 										system("cls");
-										printf("Efetuar Venda\n\nMÈtodo de pagamento:\n\n1- Pix\n2- Cart„o crÈdito\n3- Cart„o dÈbito\n4- Dinheiro\n\nOpÁ„o: ");
+										printf("Efetuar Venda\n\nM√©todo de pagamento:\n\n1- Pix\n2- Cart√£o cr√©dito\n3- Cart√£o d√©bito\n4- Dinheiro\n\nOp√ß√£o: ");
 										scanf("%d",&pag);fflush(stdin);										
 									}while(pag!=1 && pag!=2 && pag!=3 && pag!=4 );
 									switch(pag)
 									{
 										case 1: strcpy(venda.MetPag,"Pix");		
 										break;
-										case 2: strcpy(venda.MetPag,"Cart„o de CrÈdito");
+										case 2: strcpy(venda.MetPag,"Cart√£o de Cr√©dito");
 										break;
-										case 3: strcpy(venda.MetPag,"Cart„o de DÈbito");
+										case 3: strcpy(venda.MetPag,"Cart√£o de D√©bito");
 										break;
 										case 4: strcpy(venda.MetPag,"Dinheiro");
 										break;
 									}
+									system("cls");
+									printf("Efetuar Venda\n\nData da Venda:");
+									do{
+										printf("Dia: ");
+										scanf("%d",&venda.dma.dia);
+										if(venda.dma.dia<1 || venda.dma.dia>31)
+										{
+											printf("Dia inv√°lido!\n");
+											system("pause");
+											printf("\033[A");    // Move o cursor 3 linhas para cima
+											printf("\033[2K");	// Apaga
+											printf("\033[A");    
+											printf("\033[2K");
+											printf("\033[A");    
+											printf("\033[2K");
+										}
+									}while(venda.dma.dia<1 || venda.dma.dia>31);
+									
+									do{
+										printf("M√™s: ");
+										scanf("%d",&venda.dma.mes);
+										if(venda.dma.mes<1 || venda.dma.mes>12)
+										{
+											printf("M√™s inv√°lido!\n");
+											system("pause");
+											printf("\033[A");    // Move o cursor 3 linhas para cima
+											printf("\033[2K");	// Apaga
+											printf("\033[A");    
+											printf("\033[2K");
+											printf("\033[A");    
+											printf("\033[2K");
+										}
+									}while(venda.dma.mes<1 || venda.dma.mes>12);
+									
+									do{
+										printf("Ano: ");
+										scanf("%d",&venda.dma.ano);
+										if(venda.dma.ano<2020 || venda.dma.ano>2025)
+										{
+											printf("Ano inv√°lido, Por favor escolha entre 2020 e 2025!\n");
+											system("pause");
+											printf("\033[A");    // Move o cursor 3 linhas para cima
+											printf("\033[2K");	// Apaga
+											printf("\033[A");    
+											printf("\033[2K");
+											printf("\033[A");    
+											printf("\033[2K");
+										}
+									}while(venda.dma.ano<2021 || venda.dma.ano>2025);
 									
 									system("cls");
-									printf(" Dados da Venda:\n\n Cliente: %s Produto: %s DescriÁ„o: %s Quantidade: %d\n Valor Unit·rio: %.2fR$\n\n Valor Total: %.2fR$\n MÈtodo de Pagamento: %s\n"
-									,clt.nome,prod.nome,prod.desc,venda.qtd,prod.preco,prod.preco*venda.qtd,venda.MetPag);
+									printf(" Dados da Venda:\n\n Cliente: %s Produto: %s Descri√ß√£o: %s Quantidade: %d\n Valor Unit√°rio: %.2fR$\n\n "
+									"Valor Total: %.2fR$\n M√©todo de Pagamento: %s\nData da Venda: %d/%d/%d\n\n"
+									,clt.nome,prod.nome,prod.desc,venda.qtd,prod.preco,prod.preco*venda.qtd,venda.MetPag,venda.dma.dia,venda.dma.mes,venda.dma.ano);
 									do
 									{
 										printf(" Confirma a Venda? (S/N)");
@@ -1395,16 +2611,16 @@ void CadastrarVenda()
 											case 'N':printf(" Venda Cancelada!\n");
 												system("pause");
 												break;
-											default:printf(" OpÁ„o Inv·lida!\n");
+											default:printf(" Op√ß√£o Inv√°lida!\n");
 												system("pause");
 												break;
 										}
 										if(conf!='S' && conf!='N')
 										{
 											system("cls");
-											printf(" Dados da Venda:\n\n Cliente: %s Produto: %s DescriÁ„o: %s Quantidade: %d\n Valor Unit·rio: %.2fR$\n\n Valor Total: %.2fR$\n MÈtodo de Pagamento: %s\n"
-											,clt.nome,prod.nome,prod.desc,venda.qtd,prod.preco,prod.preco*venda.qtd,venda.MetPag);	
-											
+											printf(" Dados da Venda:\n\n Cliente: %s Produto: %s Descri√ß√£o: %s Quantidade: %d\n Valor Unit√°rio: %.2fR$\n\n "
+											"Valor Total: %.2fR$\n M√©todo de Pagamento: %s\nData da Venda: %d/%d/%d\n\n"
+											,clt.nome,prod.nome,prod.desc,venda.qtd,prod.preco,prod.preco*venda.qtd,venda.MetPag,venda.dma.dia,venda.dma.mes,venda.dma.ano);	
 										}
 									}while(conf!='S' && conf != 'N');
 								}
@@ -1417,10 +2633,26 @@ void CadastrarVenda()
 				}
 				fclose(arqcliente);
 			}
-			system("cls");
-			printf("Efetuar Venda\n\nEntre com o CPF do Cliente: (0 Para Voltar)");
-			scanf("%d",&venda.cpf);fflush(stdin);
-		}	
+			do{
+				system("cls");
+				printf("Efetuar Venda\n\nEntre com o CPF do Cliente: (0 Para Voltar) ");
+				fgets(venda.cpfc,13,stdin);
+				
+				size_t len = strlen(venda.cpfc);
+			    if (len > 0 && venda.cpfc[len - 1] == '\n') {
+			        venda.cpfc[len - 1] = '\0';
+			    } else {
+			        int ch;
+			        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+			    }
+				
+				if(!ValidarCPF(venda.cpfc) && stricmp(venda.cpfc,"0")!=0)
+				{
+					printf("CPF Inv√°lido!\n");
+					system("pause");
+				}
+			}while(!ValidarCPF(venda.cpfc) && stricmp(venda.cpfc,"0")!=0);
+		}
 	}
 }
 void DevolucaoVenda()
@@ -1428,7 +2660,8 @@ void DevolucaoVenda()
 	DadosCliente clt;
 	Venda venda;
 	int StatusCaixa;
-	int cpf,pos,posvenda,cont=0,nota,achou=0,qtd,qtddev;
+	char cpfc[13];
+	int pos,posvenda,cont=0,nota,achou=0,qtd,qtddev;
 	int VendaCDevolucao=0;
 	char conf;
 	
@@ -1442,14 +2675,31 @@ void DevolucaoVenda()
 		if(StatusCaixa == 0)
 		{
 			system("cls");
-			printf("DevoluÁ„o de Venda\n\nCaixa est· fechado! Favor abrir o caixa antes de operar!\n");
+			printf("Devolu√ß√£o de Venda\n\nCaixa est√° fechado! Favor abrir o caixa antes de operar!\n");
 		}
 		else
 		{
-			system("cls");
-			printf("DevoluÁ„o de Venda\n\nEntre com o CPF do cliente: ");
-			scanf("%d",&cpf);fflush(stdin);
-			pos = VerificarCliente(arqcliente,cpf);
+			do{
+				system("cls");
+				printf("Devolu√ß√£o de Venda\n\nEntre com o CPF do cliente: ");
+				fgets(cpfc,13,stdin);
+				
+				size_t len = strlen(cpfc);
+			    if (len > 0 && cpfc[len - 1] == '\n') {
+			        cpfc[len - 1] = '\0';
+			    } else {
+			        int ch;
+			        while ((ch = getchar()) != '\n' && ch != EOF);		// Limpa o restante do buffer se o \n n√£o foi lido (entrada maior que o buffer)
+			    }
+			
+				if(!ValidarCPF(cpfc))
+				{
+					printf("CPF Inv√°lido!\n");
+					system("pause");
+				}
+			}while(!ValidarCPF(cpfc));
+			
+			pos = VerificarCliente(arqcliente,cpfc);
 			if(pos==-1)
 				printf("Cliente Inexistente!\n");
 			else
@@ -1461,13 +2711,13 @@ void DevolucaoVenda()
 				FILE *arqvenda;
 				arqvenda = fopen("Vendas.bin","rb+");
 				if(arqvenda == NULL)
-					printf("Erro no arquivo Vendas!\n");
+					printf("Nenhuma Venda Cadastrada!\n");
 				else
 				{
 					fread(&venda,sizeof(Venda),1,arqvenda);
 					while(!feof(arqvenda))
 					{
-						if(venda.cpf == cpf)
+						if(stricmp(venda.cpfc,cpfc)==0)// == cpf)
 							cont++;
 						fread(&venda,sizeof(Venda),1,arqvenda);
 					}
@@ -1475,25 +2725,26 @@ void DevolucaoVenda()
 					{
 						do
 						{
-							printf("DevoluÁ„o de Venda\n\nCompras do cliente: %s\n",clt.nome);
+							printf("Devolu√ß√£o de Venda\n\nCompras do cliente: %s\n",clt.nome);
 							rewind(arqvenda);
 							fread(&venda,sizeof(Venda),1,arqvenda);
 							while(!feof(arqvenda))
 							{
-								if(venda.cpf == cpf)
+								if(stricmp(venda.cpfc,cpfc)==0)//venda.cpf == cpf)
 								{
 									
 									printf("Cliente: %s",venda.cliente);
-									printf("CPF: %d\n",venda.cpf);
+									printf("CPF: %s\n",venda.cpfc);
 									printf("Produto: %s",venda.nomeprod);
 									printf("Codigo Produto: %d\n",venda.cod);
 									printf("Quantidade: %d\n",venda.qtd);
-									printf("Valor Unit·rio: %.2fR$\n",venda.valorUni);
+									printf("Valor Unit√°rio: %.2fR$\n",venda.valorUni);
 									printf("Valor Total: %.2fR$\n",venda.valortot);
-									printf("MÈtodo de Pagamento: %s\n",venda.MetPag);
+									printf("M√©todo de Pagamento: %s\n",venda.MetPag);
+									printf("Data da Venda: %d/%d/%d\n",venda.dma.dia,venda.dma.mes,venda.dma.ano);
 									if(venda.devolucao>0)
 									{
-										printf("***Venda com DevoluÁ„o de %d itens***\n",venda.devolucao);
+										printf("***Venda com Devolu√ß√£o de %d itens***\n",venda.devolucao);
 										printf("***Motivo: %s",venda.motivo);
 									}
 									
@@ -1501,7 +2752,7 @@ void DevolucaoVenda()
 								}
 								fread(&venda,sizeof(Venda),1,arqvenda);
 							}
-							printf("Entre com o N˙mero da Nota Fiscal ‡ fazer devoluÁ„o: (0 Para voltar)");
+							printf("Entre com o N√∫mero da Nota Fiscal √† fazer devolu√ß√£o: (0 Para voltar)");
 							scanf("%d",&nota);fflush(stdin);
 							rewind(arqvenda);
 							
@@ -1514,22 +2765,22 @@ void DevolucaoVenda()
 									if(venda.devolucao>0)
 									{
 										system("cls");
-										printf("DevoluÁ„o de Venda\n\nCliente: %s",venda.cliente);
-										printf("CPF: %d\n",venda.cpf);
+										printf("Devolu√ß√£o de Venda\n\nCliente: %s",venda.cliente);
+										printf("CPF: %s\n",venda.cpfc);
 										printf("Produto: %s",venda.nomeprod);
 										printf("Codigo Produto: %d\n",venda.cod);
 										printf("Quantidade: %d\n",venda.qtd);
-										printf("Valor Unit·rio: %.2fR$\n",venda.valorUni);
+										printf("Valor Unit√°rio: %.2fR$\n",venda.valorUni);
 										printf("Valor Total: %.2fR$\n",venda.valortot);
-										printf("MÈtodo de Pagamento: %s\n",venda.MetPag);
-										printf("***Venda com DevoluÁ„o de %d itens***\n",venda.devolucao);
+										printf("M√©todo de Pagamento: %s\n",venda.MetPag);
+										printf("Data da Venda: %d/%d/%d\n",venda.dma.dia,venda.dma.mes,venda.dma.ano);
+										printf("***Venda com Devolu√ß√£o de %d itens***\n",venda.devolucao);
 										printf("***Motivo: %s",venda.motivo);
 										
 										printf("Nota fiscal: %d\n----\n\n",venda.CodNota);
-										printf("Venda J· com devoluÁ„o! N„o ser· possivel nova devoluÁ„o!\n");
-										VendaCDevolucao = 1;
+										printf("Venda J√° com devolu√ß√£o! N√£o ser√° possivel nova devolu√ß√£o!\n");
+										achou = 0;
 									}
-								
 									posvenda = (ftell(arqvenda)-sizeof(Venda));
 								}
 							}while(venda.CodNota != nota && !feof(arqvenda));
@@ -1542,27 +2793,28 @@ void DevolucaoVenda()
 							}
 						}while(achou!=1 && nota !=0);
 						
-						if(!VendaCDevolucao)
+						//if(!VendaCDevolucao)
 							if(nota != 0)
 							{
 								do
 								{
 									system("cls");
-									printf("DevoluÁ„o de Venda\n\nCliente: %s",venda.cliente);
-									printf("CPF: %d\n",venda.cpf);
+									printf("Devolu√ß√£o de Venda\n\nCliente: %s",venda.cliente);
+									printf("CPF: %s\n",venda.cpfc);
 									printf("Produto: %s",venda.nomeprod);
 									printf("Codigo Produto: %d\n",venda.cod);
 									printf("Quantidade: %d\n",venda.qtd);
-									printf("Valor Unit·rio: %.2fR$\n",venda.valorUni);
+									printf("Valor Unit√°rio: %.2fR$\n",venda.valorUni);
 									printf("Valor Total: %.2fR$\n",venda.valortot);
-									printf("MÈtodo de Pagamento: %s\n",venda.MetPag);
+									printf("M√©todo de Pagamento: %s\n",venda.MetPag);
+									printf("Data da Venda: %d/%d/%d\n",venda.dma.dia,venda.dma.mes,venda.dma.ano);
 									
 									printf("Nota fiscal: %d\n----\n\n",venda.CodNota);
-									printf("Quantidade ‡ fazer devoluÁ„o: ");
+									printf("Quantidade √† fazer devolu√ß√£o: ");
 									scanf("%d",&qtd);fflush(stdin);
 									if(qtd>venda.qtd || qtd<1)
 									{
-										printf("Quantidade Inv·lida! Deve ser menor ou igual a quantidade da venda e maior que zero!\n");
+										printf("Quantidade Inv√°lida! Deve ser menor ou igual a quantidade da venda e maior que zero!\n");
 										system("pause");
 									}
 								}while(qtd>venda.qtd || qtd<1);
@@ -1571,21 +2823,22 @@ void DevolucaoVenda()
 								{
 									system("cls");
 									system("cls");
-									printf("DevoluÁ„o de Venda\n\nCliente: %s",venda.cliente);
-									printf("CPF: %d\n",venda.cpf);
+									printf("Devolu√ß√£o de Venda\n\nCliente: %s",venda.cliente);
+									printf("CPF: %s\n",venda.cpfc);
 									printf("Produto: %s",venda.nomeprod);
 									printf("Codigo Produto: %d\n",venda.cod);
 									printf("Quantidade: %d\n",venda.qtd);
-									printf("Valor Unit·rio: %.2fR$\n",venda.valorUni);
+									printf("Valor Unit√°rio: %.2fR$\n",venda.valorUni);
 									printf("Valor Total: %.2fR$\n",venda.valortot);
-									printf("MÈtodo de Pagamento: %s\n",venda.MetPag);
+									printf("M√©todo de Pagamento: %s\n",venda.MetPag);
+									printf("Data da Venda: %d/%d/%d\n",venda.dma.dia,venda.dma.mes,venda.dma.ano);
 									printf("Nota fiscal: %d\n----\n\n",venda.CodNota);
 									
-									printf("Motivo de devoluÁ„o: ");
+									printf("Motivo de devolu√ß√£o: ");
 									fgets(venda.motivo,100,stdin);
 									if(strlen(venda.motivo)<6)
 									{
-										printf("Motivo deve ser preenchido com no mÌnimo 5 caracteres para ser considerado v·lido!\n");
+										printf("Motivo deve ser preenchido com no m√≠nimo 5 caracteres para ser considerado v√°lido!\n");
 										system("pause");
 									}
 								}while(strlen(venda.motivo)<6);
@@ -1593,15 +2846,17 @@ void DevolucaoVenda()
 								venda.devolucao = qtd;
 								do{
 									system("cls");
-									printf("DevoluÁ„o de Venda\n\nCliente: %s",venda.cliente);
-									printf("CPF: %d\n",venda.cpf);
+									printf("Devolu√ß√£o de Venda\n\nCliente: %s",venda.cliente);
+									printf("CPF: %s\n",venda.cpfc);
 									printf("Produto: %s",venda.nomeprod);
 									printf("Codigo Produto: %d\n",venda.cod);
 									printf("Quantidade: %d\n",venda.qtd);
-									printf("Valor Unit·rio: %.2fR$\n",venda.valorUni);
+									printf("Valor Unit√°rio: %.2fR$\n",venda.valorUni);
 									printf("Valor Total: %.2fR$\n",venda.valortot);
-									printf("MÈtodo de Pagamento: %s\n",venda.MetPag);
+									printf("M√©todo de Pagamento: %s\n",venda.MetPag);
+									printf("Data da Venda: %d/%d/%d\n",venda.dma.dia,venda.dma.mes,venda.dma.ano);
 									printf("Nota fiscal: %d\n----\n\n",venda.CodNota);
+									
 									
 									printf("Motivo: %s\n",venda.motivo);
 									printf("Quantidade a devolver: %d\n\n",qtd);
@@ -1609,7 +2864,7 @@ void DevolucaoVenda()
 									scanf("%d",&qtddev);fflush(stdin);
 									if(qtddev < 0 || qtddev > qtd)
 									{
-										printf("Quantidade inv·lida! Deve ser menor ou igual a quantidade em devoluÁ„o!\n");
+										printf("Quantidade inv√°lida! Deve ser menor ou igual a quantidade em devolu√ß√£o!\n");
 										system("pause");
 									}
 								}while(qtddev < 0 || qtddev > qtd);
@@ -1617,20 +2872,22 @@ void DevolucaoVenda()
 								do
 								{
 									system("cls");
-									printf("DevoluÁ„o de Venda\n\nCliente: %s",venda.cliente);
-									printf("CPF: %d\n",venda.cpf);
+									printf("Devolu√ß√£o de Venda\n\nCliente: %s",venda.cliente);
+									printf("CPF: %s\n",venda.cpfc);
 									printf("Produto: %s",venda.nomeprod);
 									printf("Codigo Produto: %d\n",venda.cod);
 									printf("Quantidade: %d\n",venda.qtd);
-									printf("Valor Unit·rio: %.2fR$\n",venda.valorUni);
+									printf("Valor Unit√°rio: %.2fR$\n",venda.valorUni);
 									printf("Valor Total: %.2fR$\n",venda.valortot);
-									printf("MÈtodo de Pagamento: %s\n",venda.MetPag);
+									printf("M√©todo de Pagamento: %s\n",venda.MetPag);
+									printf("Data da Venda: %d/%d/%d\n",venda.dma.dia,venda.dma.mes,venda.dma.ano);
 									printf("Nota fiscal: %d\n----\n\n",venda.CodNota);
+									
 									
 									printf("Motivo: %s\n",venda.motivo);
 									printf("Quantidade a devolver: %d\n\n",qtd);
 									printf("Quantidade a devolver ao estoque: %d\n\n",qtddev);
-									printf("Confirma o pedido de devoluÁ„o?(S/N) ");
+									printf("Confirma o pedido de devolu√ß√£o?(S/N) ");
 									scanf(" %c",&conf);fflush(stdin);
 									conf = toupper(conf);
 								}while(conf !='S' && conf!='N');
@@ -1641,14 +2898,14 @@ void DevolucaoVenda()
 									if(qtddev>0)
 										AtualizarEstoque(venda.cod,qtddev);
 									AtualizarSaldoCaixa(-(venda.valorUni*qtd));
-									printf("DevoluÁ„o concluida!\n");
+									printf("Devolu√ß√£o concluida!\n");
 								}
 								else
-									printf("DevoluÁ„o cancelada!\n");
+									printf("Devolu√ß√£o cancelada!\n");
 							}
 					}
 					else
-						printf("O(A) cliente: %sN„o possui compras realizadas.\n",clt.nome);
+						printf("O(A) cliente: %sN√£o possui compras realizadas.\n",clt.nome);
 				}
 				fclose(arqvenda);
 			}
@@ -1657,81 +2914,157 @@ void DevolucaoVenda()
 	fclose(arqcliente);
 	system("pause");
 }
+void OrdenarVendas()
+{
+	FILE *arq;
+	Venda clt,clti;
+	int i,qtde=0;
+	arq = fopen("Vendas.bin","rb+");
+	if(arq == NULL)
+		return;
+	else
+	{
+		fseek(arq,0,2);
+		qtde=ftell(arq)/sizeof(Venda);
+		while(qtde>1)
+		{
+			for(i=0;i<qtde-1;i++)
+			{
+				fseek(arq,i*sizeof(Venda),0);
+				fread(&clt,sizeof(Venda),1,arq);
+				fseek(arq,(i+1)*sizeof(Venda),0);
+				fread(&clti,sizeof(Venda),1,arq);
+				if(stricmp(clt.cliente,clti.cliente)>0)
+				{
+					fseek(arq,i*sizeof(Venda),0);
+					fwrite(&clti,sizeof(Venda),1,arq);
+					fseek(arq,(i+1)*sizeof(Venda),0);
+					fwrite(&clt,sizeof(Venda),1,arq);
+				}
+			}
+			qtde--;
+		}
+	}
+	fclose(arq);	
+}
+void OrdenarVendasValor(menor)
+{
+	FILE *arq;
+	Venda clt,clti;
+	int i,qtde=0;
+	arq = fopen("Vendas.bin","rb+");
+	if(arq == NULL)
+	  return;
+	else
+	{
+		fseek(arq,0,2);
+		qtde=ftell(arq)/sizeof(Venda);
+		while(qtde>1)
+		{
+			for(i=0;i<qtde-1;i++)
+			{
+				fseek(arq,i*sizeof(Venda),0);
+				fread(&clt,sizeof(Venda),1,arq);
+				fseek(arq,(i+1)*sizeof(Venda),0);
+				fread(&clti,sizeof(Venda),1,arq);
+				if(menor)
+				{
+					if(clt.valortot>clti.valortot)// Ordena menor pro maior
+					{
+						fseek(arq,i*sizeof(Venda),0);
+						fwrite(&clti,sizeof(Venda),1,arq);
+						fseek(arq,(i+1)*sizeof(Venda),0);
+						fwrite(&clt,sizeof(Venda),1,arq);
+					}
+				}
+				else
+				{
+					if(clt.valortot<clti.valortot) /// Ordena maior pro menor
+					{
+						fseek(arq,i*sizeof(Venda),0);
+						fwrite(&clti,sizeof(Venda),1,arq);
+						fseek(arq,(i+1)*sizeof(Venda),0);
+						fwrite(&clt,sizeof(Venda),1,arq);
+					}
+				}
+			}
+			qtde--;
+		}
+	}
+	fclose(arq);
+}
 
-	//////  RELAT”RIOS  //////
+
+	//////  RELAT√ìRIOS  //////
 	
 void RelatorioProd()
 {
-	int tipo=1;
+	int tipo=1,cont=0;
 	DadosProduto prod;
 	
 	FILE *arq;
 	arq = fopen("Produtos.bin","rb");
 	if(arq == NULL)
 	{
-		printf("\nErro no arquivo Produtos!\n");
+		printf("\nN√£o h√° produtos cadastrados!\n");
 		system("pause");
 	}
 	else
 	{
 		fread(&prod,sizeof(DadosProduto),1,arq);
-		if(feof(arq))
-		{
-			printf("N„o h· produtos cadastrados!\n");
-			system("pause");
-		}
 		system("cls");
-		printf("RelatÛrio Produtos\n\n");
+		printf("Relat√≥rio Produtos\n\n");
 		while(!feof(arq))
 		{
 			if(tipo==prod.tipo)
 			{
+				cont++;
 				printf("Nome: %s",prod.nome);
-				printf("CÛdigo: %d\n",prod.cod);
-				printf("PreÁo: %.2fR$\n",prod.preco);
+				printf("C√≥digo: %d\n",prod.cod);
+				printf("Pre√ßo: %.2fR$\n",prod.preco);
 				printf("Quantidade: %d\n----\n",prod.qtd);
 			}
 			
 			fread(&prod,sizeof(DadosProduto),1,arq);
 		}
+		if(cont==0)
+			printf("N√£o h√° produtos cadastrados.\n");
 		system("pause");
 	}
 	fclose(arq);
 }
 void RelatorioInsumo()
 {
-	int tipo=3;
+	int tipo=3,cont=0;
 	DadosProduto prod;
 	
 	FILE *arq;
 	arq = fopen("Produtos.bin","rb");
 	if(arq == NULL)
 	{
-		printf("\nErro no arquivo Produtos!\n");
+		printf("\nN√£o h√° insumos cadastrados!\n");
 		system("pause");
 	}
 	else
 	{
 		fread(&prod,sizeof(DadosProduto),1,arq);
-		if(feof(arq))
-		{
-			printf("N„o h· Insumos cadastrados!\n");
-			system("pause");
-		}
 		system("cls");
-		printf("RelatÛrio Insumos\n\n");
+		printf("Relat√≥rio Insumos\n\n");
 		while(!feof(arq))
 		{
 			if(tipo==prod.tipo)
 			{
+				cont++;
 				printf("Nome: %s",prod.nome);
-				printf("CÛdigo: %d\n",prod.cod);
-				printf("PreÁo: %.2fR$\n",prod.preco);
+				printf("C√≥digo: %d\n",prod.cod);
+				printf("Pre√ßo: %.2fR$\n",prod.preco);
 				printf("Quantidade: %d\n----\n",prod.qtd);
 			}
 			
 			fread(&prod,sizeof(DadosProduto),1,arq);
 		}
+		if(cont==0)
+			printf("N√£o h√° insumos cadastrados.\n");
 		system("pause");
 	}
 	fclose(arq);
@@ -1744,32 +3077,28 @@ void RelatorioNotas()
 	arq = fopen("Vendas.bin","rb");
 	if(arq == NULL)
 	{
-		printf("\nErro no arquivo Venda!\n");
+		printf("\nN√£o h√° vendas cadastradas!\n");
 		system("pause");
 	}
 	else
 	{
 		fread(&venda,sizeof(Venda),1,arq);
-		if(feof(arq))
-		{
-			printf("N„o h· Notas registradas!\n");
-			system("pause");
-		}
 		system("cls");
-		printf("RelatÛrio Notas\n\n");
+		printf("Relat√≥rio Notas\n\n");
 		while(!feof(arq))
 		{
 			printf("Cliente: %s",venda.cliente);
-			printf("CPF: %d\n",venda.cpf);
+			printf("CPF: %s\n",venda.cpfc);
 			printf("Produto: %s",venda.nomeprod);
 			printf("Quantidade: %d\n",venda.qtd);
 			printf("Valor Total: %.2fR$\n",venda.valortot);
-			printf("MÈtodo de Pagamento: %s\n",venda.MetPag);
+			printf("M√©todo de Pagamento: %s\n",venda.MetPag);
 			if(venda.devolucao>0)
 			{
-				printf("***Venda com DevoluÁ„o de %d itens***\n",venda.devolucao);
+				printf("***Venda com Devolu√ß√£o de %d itens***\n",venda.devolucao);
 				printf("***Motivo: %s",venda.motivo);
 			}
+			printf("Data da Venda: %d/%d/%d\n",venda.dma.dia,venda.dma.mes,venda.dma.ano);
 			printf("Nota fiscal: %d\n----\n\n",venda.CodNota);
 			fread(&venda,sizeof(Venda),1,arq);
 		}
@@ -1785,35 +3114,33 @@ void RelatorioVendas()
 	arq = fopen("Vendas.bin","rb");
 	if(arq == NULL)
 	{
-		printf("\nErro no arquivo Venda!\n");
+		printf("\nN√£o h√° vendas cadastradas!\n");
 		system("pause");
 	}
 	else
 	{
 		fread(&venda,sizeof(Venda),1,arq);
-		if(feof(arq))
-		{
-			printf("N„o h· Vendas cadastrados!\n");
-			system("pause");
-		}
 		system("cls");
-		printf("RelatÛrio Vendas\n\n");
+		printf("Relat√≥rio Vendas\n\n");
 		while(!feof(arq))
 		{
 			printf("Cliente: %s",venda.cliente);
-			printf("CPF: %d\n",venda.cpf);
+			printf("CPF: %s\n",venda.cpfc);
 			printf("Produto: %s",venda.nomeprod);
 			printf("Codigo Produto: %d\n",venda.cod);
 			printf("Quantidade: %d\n",venda.qtd);
-			printf("Valor Unit·rio: %.2fR$\n",venda.valorUni);
+			printf("Valor Unit√°rio: %.2fR$\n",venda.valorUni);
 			printf("Valor Total: %.2fR$\n",venda.valortot);
-			printf("MÈtodo de Pagamento: %s\n",venda.MetPag);
+			printf("M√©todo de Pagamento: %s\n",venda.MetPag);
 			if(venda.devolucao>0)
 			{
-				printf("***Venda com DevoluÁ„o de %d itens***\n",venda.devolucao);
+				printf("***Venda com Devolu√ß√£o de %d itens***\n",venda.devolucao);
 				printf("***Motivo: %s",venda.motivo);
 			}
+			printf("Data da Venda: %d/%d/%d\n",venda.dma.dia,venda.dma.mes,venda.dma.ano);
 			printf("Nota fiscal: %d\n----\n\n",venda.CodNota);
+			
+
 			fread(&venda,sizeof(Venda),1,arq);
 		}
 		system("pause");
@@ -1828,31 +3155,26 @@ void RelatorioCompras()
 	arq = fopen("Compras.bin","rb");
 	if(arq == NULL)
 	{
-		printf("\nErro no arquivo Compra!\n");
+		printf("\nN√£o h√° Compras cadastradas!\n");
 		system("pause");
 	}
 	else
 	{
 		fread(&compra,sizeof(Compra),1,arq);
-		if(feof(arq))
-		{
-			printf("N„o h· Comrpas cadastrados!\n");
-			system("pause");
-		}
 		system("cls");
-		printf("RelatÛrio Compras\n\n");
+		printf("Relat√≥rio Compras\n\n");
 		while(!feof(arq))
 		{
 			printf("Fornecedor: %s",compra.fornecedor);
-			printf("CNPJ: %d\n",compra.cnpj);
+			printf("CNPJ: %s\n",compra.cnpjc);
 			printf("Produto: %s",compra.nomeprod);
 			printf("Codigo Produto: %d\n",compra.cod);
 			printf("Quantidade: %d\n",compra.qtd);
-			printf("Valor Unit·rio: %.2fR$\n",compra.precoUni);
+			printf("Valor Unit√°rio: %.2fR$\n",compra.precoUni);
 			printf("Valor Total: %.2fR$\n",compra.valortot);
-			printf("MÈtodo de Pagamento: %s\n----\n",compra.MetPag);
+			printf("M√©todo de Pagamento: %s\n",compra.MetPag);
+			printf("Data da Compra: %d/%d/%d\n----\n",compra.dma.dia,compra.dma.mes,compra.dma.ano);
 			
-			//printf("Nota fiscal: %%d\n----\n\n");
 			fread(&compra,sizeof(Compra),1,arq);
 		}
 		system("pause");
@@ -1904,7 +3226,7 @@ void AbrirCaixa()
 			scanf("%f",&caixa.valcaixa);
 			if(caixa.valcaixa<0)
 			{
-				printf("Valor inv·lido! Deve ser zero ou mais!\n");
+				printf("Valor inv√°lido! Deve ser zero ou mais!\n");
 				system("pause");
 			}
 		}while(caixa.valcaixa<0);
@@ -1980,26 +3302,92 @@ void AtualizarSaldoCaixa(float valor)
 	fclose(arq);
 }
 
+	//////	  FUN√á√ïES AUXILIARES //////
+// ===== Fun√ß√µes de Valida√ß√£o Adicionadas da V25 =====
+
+int ClienteFezVenda(char *cpfc) 
+{
+    FILE *arqvenda;
+	arqvenda = fopen("Vendas.bin", "rb");
+    if (arqvenda == NULL) {
+        printf("Erro ao abrir o arquivo de vendas!\n");
+        return 0;
+    }
+
+    Venda venda;
+    while (fread(&venda, sizeof(Venda), 1, arqvenda)) {
+        if (stricmp(venda.cpfc,cpfc)==0)//venda.cpf == cpf) 
+		{
+            fclose(arqvenda);
+            return 1; // Cliente j√° fez compra
+        }
+    }
+
+    fclose(arqvenda);
+    return 0; // Cliente n√£o fez compra
+}
+
+int ValidarEstado(char *estado) {
+    const char *estados[] = {
+        "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB",
+        "PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
+    };
+    int i; //Gambiarra
+    for (i = 0; i < 27; i++) {
+        if (strcmp(estado, estados[i]) == 0) return 1;
+    }
+    return 0;
+}
+int ValidarCPF(char *cpfc) {
+	if(strlen(cpfc) == 11)
+		return 1;
+	else
+		return 0;
+}
+int ValidarCNPJ(char *cnpj) {
+	if(strlen(cnpj) == 14)
+		return 1;
+	else
+		return 0;
+}
+int ValidarTel(char *telefone) {
+	if(strlen(telefone) == 11)
+		return 1;
+	else
+		return 0;}
+int ValidarCep(char *cep) {
+    return strlen(cep) == 8;
+}
+int ValidarNum(char *num) {
+    return strlen(num)>0 && strlen(num) <6;
+}
+int CampoVazio(char *str) {
+	if(strlen(str)<5)
+		return 1;
+	else
+		return 0;
+}
+
 	//////    MENUS   //////
 
 int MenuPrincipal()
 {
 	int op,CaixaStatus;
 	printf("Menu SEMEAR, Seja Bem Vindo! \n");
-	printf("\nEscolha a opÁ„o desejada:");
+	printf("\nEscolha a op√ß√£o desejada:");
 	printf("\n1- Gerenciar Clientes");    
-	printf("\n2- Gerenciar Produtos, ServiÁos e Insumos");  
+	printf("\n2- Gerenciar Produtos, Servi√ßos e Insumos");  
 	printf("\n3- Gerenciar Fornecedores");		
-	printf("\n4- Gerenciar Compras");		//Falta DevoluÁ„o
+	printf("\n4- Gerenciar Compras");		//Falta Devolu√ß√£o
 	printf("\n5- Gerenciar Vendas");
-	printf("\n6- Gerar RelatÛrios\n"); //FALTANDO notas
+	printf("\n6- Gerar Relat√≥rios");
 	printf("\n7- Gerenciar Caixa\n");
 	CaixaStatus = VerificarCaixa();
 	if(CaixaStatus ==1)
 		printf("\n   CAIXA ABERTO!");
 	else
 		printf("\n   CAIXA FECHADO!");
-	printf("\n\n0- Sair\n\nOpÁ„o: ");
+	printf("\n\n0- Sair\n\nOp√ß√£o: ");
 	scanf("%d",&op);fflush(stdin);
 	return op;
 }
@@ -2013,6 +3401,7 @@ int MenuGCliente()
 	printf("\n3- Excluir Clientes");
 	printf("\n4- Listar Clientes");
 	printf("\n5- Buscar Clientes");
+	printf("\n6- Ordenar Clientes");
 
 	printf("\n0- Voltar\n\n");
 	scanf("%d",&op2);fflush(stdin);
@@ -2022,12 +3411,13 @@ int MenuGProdutos()
 {
 	int op2;
 	system("cls"); // limpa a tela.
-	printf("Gerenciamento de Produtos, ServiÁos e Insumos:\n");
+	printf("Gerenciamento de Produtos, Servi√ßos e Insumos:\n");
 	printf("\n1- Cadastrar Itens");
 	printf("\n2- Editar Itens");
 	printf("\n3- Excluir Itens");
 	printf("\n4- Listar Itens");
 	printf("\n5- Buscar Itens");
+	printf("\n6- Ordenar Itens");
 
 	printf("\n0- Voltar\n\n");
 	scanf("%d",&op2);fflush(stdin);
@@ -2043,6 +3433,8 @@ int MenuGFornecedores()
 	printf("\n3- Excluir Fornecedores");
 	printf("\n4- Listar Fornecedores");
 	printf("\n5- Buscar Fornecedores");
+	printf("\n6- Ordenar Fornecedores");
+
 	printf("\n0- Voltar\n\n");
 	scanf("%d",&op2);fflush(stdin);
 	return op2;
@@ -2053,7 +3445,7 @@ int MenuGCompras()
 	system("cls"); // limpa a tela.
 	printf("Gerenciamento de Compras:\n");
 	printf("\n1- Efetuar Compra");
-	printf("\n2- Efetuar DevoluÁ„o de Compra");
+	printf("\n2- Efetuar Devolu√ß√£o de Compra");
 	printf("\n0- Voltar\n\n");
 	scanf("%d",&op2);fflush(stdin);
 	return op2;
@@ -2064,7 +3456,7 @@ int MenuGVendas()
 	system("cls"); // limpa a tela.
 	printf("Gerenciamento de Vendas:\n");
 	printf("\n1- Efetuar Venda");
-	printf("\n2- Efetuar DevoluÁ„o de Vendas");
+	printf("\n2- Efetuar Devolu√ß√£o de Vendas");
 	printf("\n0- Voltar\n\n");
 	scanf("%d",&op2);fflush(stdin);
 	return op2;
@@ -2073,7 +3465,7 @@ int MenuGRelatorios()
 {
 	int op2;
 	system("cls"); // limpa a tela.
-	printf("Gerar RelatÛrios:\n");
+	printf("Gerar Relat√≥rios:\n");
 	printf("\n1- Saldo de Produtos");
 	printf("\n2- Saldo de Insumos");
 	printf("\n3- Notas Emitidas");
@@ -2110,7 +3502,7 @@ int MenuCaixa()
 		printf("\nCAIXA ABERTO!");
 	else
 		printf("\nCAIXA FECHADO!");
-	printf("\n\nOpÁ„o: ");
+	printf("\n\nOp√ß√£o: ");
 	scanf("%d",&op2);
 	return op2;
 }
@@ -2119,7 +3511,7 @@ main()
 {
 	setlocale(LC_ALL,"Portuguese");
 	
-	int op,op2; // OPC√O DO MENU
+	int op,op2,filtro,menor; // OPC√ÉO DO MENU
 	int CaixaStatus;
 	
 	InicializarCaixa();
@@ -2145,8 +3537,10 @@ main()
 							break;
 						case 5: BuscarCliente();
 							break;
+						case 6: OrdenarClientes();
+							break;
 							
-						default: printf("OpÁ„o inv·lida!");
+						default: printf("Op√ß√£o inv√°lida!");
 								 system("pause");
 							break;
 						case 0:break;
@@ -2170,7 +3564,11 @@ main()
 							break;
 						case 5: BuscarProduto();
 							break;
-						default: printf("OpÁ„o inv·lida!");
+						case 6: OrdenarProdutos();
+								printf("Produtos Ordenados!\n");
+								system("pause");
+							break;
+						default: printf("Op√ß√£o inv√°lida!");
 								 system("pause");
 							break;
 						case 0:break;
@@ -2194,7 +3592,9 @@ main()
 							break;
 						case 5: BuscarFornecedor();
 							break;
-						default: printf("OpÁ„o inv·lida!");
+						case 6: OrdenarFornecedores();
+							break;
+						default: printf("Op√ß√£o inv√°lida!");
 								 system("pause");
 							break;
 						case 0:break;
@@ -2212,7 +3612,7 @@ main()
 							break;
 						case 2: DevolucaoCompra();
 							break;
-						default: printf("OpÁ„o inv·lida!");
+						default: printf("Op√ß√£o inv√°lida!");
 								 system("pause");
 							break;
 						case 0:break;
@@ -2230,7 +3630,7 @@ main()
 							break;
 						case 2: DevolucaoVenda();
 							break;
-						default: printf("OpÁ„o inv·lida!");
+						default: printf("Op√ß√£o inv√°lida!");
 								 system("pause");
 							break;
 						case 0:break;
@@ -2244,17 +3644,112 @@ main()
 				{
 					switch(op2)
 					{
-						case 1: RelatorioProd();
+						case 1: do{
+								printf("Filtrar relat√≥rio por:\n1- Nome\n2- Menor Quantidade\n3- Maior Quantidade\n\n Op√ß√£o: ");
+								scanf("%d",&filtro);
+								}while(filtro<1 || filtro>3);
+								switch(filtro)
+								{
+									case 1: OrdenarProdutos();
+											RelatorioProd();
+										break;
+									case 2: menor = 1;
+											OrdenarProdutosQtd(menor);
+											RelatorioProd();
+										break;
+									case 3: menor = 0;
+											OrdenarProdutosQtd(menor);
+											RelatorioProd();
+										break;
+								}
+								
+								
 							break;
-						case 2: RelatorioInsumo();
+						case 2: do{
+								printf("Filtrar relat√≥rio por:\n1- Nome\n2- Menor Quantidade\n3- Maior Quantidade\n\n Op√ß√£o: ");
+								scanf("%d",&filtro);
+								}while(filtro<1 || filtro>3);
+								switch(filtro)
+								{
+									case 1: OrdenarProdutos();
+											RelatorioInsumo();
+										break;
+									case 2: menor = 1;
+											OrdenarProdutosQtd(menor);
+											RelatorioInsumo();
+										break;
+									case 3: menor = 0;
+											OrdenarProdutosQtd(menor);
+											RelatorioInsumo();
+										break;
+								}
+								
+								
 							break;
-						case 3:	RelatorioNotas();
+						case 3:	do{
+								printf("Filtrar relat√≥rio por:\n1- Cliente\n2- Menor Valor\n3- Maior Valor\n\n Op√ß√£o: ");
+								scanf("%d",&filtro);
+								}while(filtro<1 || filtro>3);
+								switch(filtro)
+								{
+									case 1: OrdenarVendas();
+											RelatorioNotas();
+										break;
+									case 2: menor = 1;
+											OrdenarVendasValor(menor);
+											RelatorioNotas();
+										break;
+									case 3: menor = 0;
+											OrdenarVendasValor(menor);
+											RelatorioNotas();
+										break;
+								}
+								
+								
 							break;
-						case 4: RelatorioVendas();
+						case 4: do{
+								printf("Filtrar relat√≥rio por:\n1- Cliente\n2- Menor Valor\n3- Maior Valor\n\n Op√ß√£o: ");
+								scanf("%d",&filtro);
+								}while(filtro<1 || filtro>3);
+								switch(filtro)
+								{
+									case 1: OrdenarVendas();
+											RelatorioVendas();
+										break;
+									case 2: menor = 1;
+											OrdenarVendasValor(menor);
+											RelatorioVendas();
+										break;
+									case 3: menor = 0;
+											OrdenarVendasValor(menor);
+											RelatorioVendas();
+										break;
+								}
+								
+								
 							break;
-						case 5: RelatorioCompras();
+						case 5: do{
+								printf("Filtrar relat√≥rio por:\n1- Fornecedor\n2- Menor Valor\n3- Maior Valor\n\n Op√ß√£o: ");
+								scanf("%d",&filtro);
+								}while(filtro<1 || filtro>3);
+								switch(filtro)
+								{
+									case 1: OrdenarCompras();
+											RelatorioCompras();
+										break;
+									case 2: menor = 1;
+											OrdenarComprasValor(menor);
+											RelatorioCompras();
+										break;
+									case 3: menor = 0;
+											OrdenarComprasValor(menor);
+											RelatorioCompras();
+										break;
+								}
+								
+								
 							break;
-						default: printf("OpÁ„o inv·lida!");
+						default: printf("Op√ß√£o inv√°lida!");
 								 system("pause");
 								 break;
 						case 0:break;
@@ -2273,7 +3768,7 @@ main()
 							break;
 						case 2: FecharCaixa();
 							break;
-						default: printf("OpÁ„o inv·lida!");
+						default: printf("Op√ß√£o inv√°lida!");
 								 system("pause");
 							break;
 						case 0:break;
@@ -2281,7 +3776,7 @@ main()
 					op2 = MenuCaixa();
 				}
 				break;
-			default:printf("\nOpÁ„o Inv·lida\n");
+			default:printf("\nOp√ß√£o Inv√°lida\n");
 					system("pause");
 				break;
 			case 0:break;
@@ -2291,3 +3786,8 @@ main()
 	}
 	printf("Obrigado por usar nosso sistema! :D");
 }
+
+
+
+
+
