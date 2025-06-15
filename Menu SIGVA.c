@@ -4204,7 +4204,7 @@ int CampoVazio(char *str) {
 int MenuPrincipal()
 {
 	int op,CaixaStatus;
-	printf("Menu SEMEAR, Seja Bem Vindo! \n");
+	printf("Menu SIGVA, Seja Bem Vindo! \n");
 	printf("\nEscolha a opção desejada:");
 	printf("\n1- Gerenciar Clientes");
 	printf("\n2- Gerenciar Produtos, Serviços e Insumos");
